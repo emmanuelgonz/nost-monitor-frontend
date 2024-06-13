@@ -24,6 +24,7 @@
   },
   "dependencies": {
     "cesium": "^1.114.0",
-    "lodash": "^4.17.21"
+    "lodash": "^4.17.21",
+    "mqtt": "^5.7.0"
   }
 }

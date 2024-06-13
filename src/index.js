@@ -19,3 +19,20 @@ const viewer = new Viewer("cesiumContainer", {
   sceneModePicker: false,
   navigationHelpButton: false,
 });
+
+import mqtt from "mqtt"; // import namespace "mqtt"
+let client = mqtt.connect("ws://test.mosquitto.org:8080"); // create a client
+
+client.on("connect", () => {
+  client.subscribe("presence", (err) => {
+    if (!err) {
+      client.publish("presence", "Hello mqtt");
+    }
+  });
+});
+
+client.on("message", (topic, message) => {
+  // message is Buffer
+  console.log(message.toString());
+  client.end();
+});
