@@ -1,2 +1,3 @@
 # nost-monitor-frontend
-Monitor Frontend for New Observing Strategies Testbed (NOS-T)
+
+Monitor Frontend for the New Observing Strategies Testbed (NOS-T)
