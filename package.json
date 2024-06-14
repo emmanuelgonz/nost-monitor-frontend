@@ -14,16 +14,16 @@
   "license": "BSD-3-Clause",
   "devDependencies": {
     "copy-webpack-plugin": "^9.1.0",
-    "css-loader": "^6.8.1",
+    "css-loader": "^6.11.0",
     "dotenv-webpack": "^8.1.0",
     "html-webpack-plugin": "^5.6.0",
-    "style-loader": "^3.3.3",
-    "webpack": "^5.89.0",
+    "style-loader": "^3.3.4",
+    "webpack": "^5.92.0",
     "webpack-cli": "^4.10.0",
-    "webpack-dev-server": "^4.15.1"
+    "webpack-dev-server": "^4.15.2"
   },
   "dependencies": {
-    "cesium": "^1.114.0",
+    "cesium": "^1.118.2",
     "lodash": "^4.17.21",
     "mqtt": "^5.7.0"
   }
