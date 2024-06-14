@@ -100,6 +100,10 @@ module.exports = {
       CESIUM_BASE_URL: JSON.stringify(cesiumBaseUrl),
     }),
     new Dotenv(),
+    new webpack.ProvidePlugin({
+        $: 'jquery',
+        jQuery: 'jquery'
+    }),
   ],
   mode: "development",
   devtool: "eval",

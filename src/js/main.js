@@ -41,3 +41,44 @@ client.on("message", (topic, message) => {
   console.log(message.toString());
   client.end();
 });
+
+import { TempusDominus } from '@eonasdan/tempus-dominus'; 
+
+const initializeStartPicker = new TempusDominus(document.getElementById('initializeStart'), {
+  display: {
+    icons: {
+      time: 'bi bi-clock',
+      date: 'bi bi-calendar',
+      up: 'bi bi-arrow-up',
+      down: 'bi bi-arrow-down',
+      previous: 'bi bi-chevron-left',
+      next: 'bi bi-chevron-right',
+      today: 'bi bi-calendar-check',
+      clear: 'bi bi-trash',
+      close: 'bi bi-x',
+    },
+    sideBySide: true,
+    buttons: {
+      close: true,
+    },
+  }
+});
+const initializeEndPicker = new TempusDominus(document.getElementById('initializeEnd'), {
+  display: {
+    icons: {
+      time: 'bi bi-clock',
+      date: 'bi bi-calendar',
+      up: 'bi bi-arrow-up',
+      down: 'bi bi-arrow-down',
+      previous: 'bi bi-chevron-left',
+      next: 'bi bi-chevron-right',
+      today: 'bi bi-calendar-check',
+      clear: 'bi bi-trash',
+      close: 'bi bi-x',
+    },
+    sideBySide: true,
+    buttons: {
+      close: true,
+    },
+  }
+});
