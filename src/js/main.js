@@ -1,10 +1,15 @@
+// Import our custom CSS
+import '../scss/styles.scss'
+
+// Import all of Bootstrap's JS
+import * as bootstrap from 'bootstrap'
+
 import {
   Viewer,
   Ion,
   Terrain,
 } from "cesium";
 import "cesium/Build/Cesium/Widgets/widgets.css";
-import "./css/main.css";
 
 // CesiumJS has a default access token built in but it's not meant for active use.
 // please set your own access token can be found at: https://cesium.com/ion/tokens.
