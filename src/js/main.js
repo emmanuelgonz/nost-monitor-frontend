@@ -17,6 +17,12 @@ import "cesium/Build/Cesium/Widgets/widgets.css";
 // please set your own access token can be found at: https://cesium.com/ion/tokens.
 Ion.defaultAccessToken = process.env.CESIUM_TOKEN;
 
+// Other environment variables
+$("#loginPrefix").val(process.env.DEFAULT_PREFIX);
+$("#loginUsername").val(process.env.DEFAULT_USERNAME);
+$("#loginHostname").val(process.env.DEFAULT_HOSTNAME);
+$("#loginPort").val(process.env.DEFAULT_PORT);
+
 // Initialize the Cesium Viewer in the HTML element with the `cesiumContainer` ID.
 const viewer = new Viewer("cesiumContainer", {
   terrain: Terrain.fromWorldTerrain(),
@@ -43,15 +49,10 @@ $("#loginForm").on("submit", (e) => {
   const hostname = $("#loginHostname").val();
   const port = parseInt($("#loginPort").val());
   const encrypted = $("#loginEncrypted").prop("checked");
-  const connectionString = "ws" + (encrypted ? "s" : "") + "://" + hostname + ":" + port;
-  console.log(connectionString)
+  const connectionString = "mqtt" + (encrypted ? "s" : "") + "://" + hostname + ":" + port;
   let client = mqtt.connect(
     connectionString, 
     {
-      wsOptions: {
-        host: hostname,
-        port: port
-      }, 
       username: username,
       password: password,
       reconnectPeriod: 0, 
@@ -63,10 +64,19 @@ $("#loginForm").on("submit", (e) => {
     console.log(error);
   });
   client.on("connect", () => {
+    client.subscribe($("#loginPrefix").val(), (err) => {
+      if(!err) {
+        client.on
+        client.publish($("#loginPrefix").val(), "Monitor (" + $("#loginUsername").val() + ") connected.");
+      }
+    });
     loginModal.hide();
     $("#navLogin").hide();
-    $("#navLogout").text("Logout " + $("#loginUsername").val());
+    $("#navLogout").text("Logout " + $("#loginUsername").val() + " (" + $("#loginPrefix").val() + ")");
     $("#navLogout").show();
+  });
+  client.on("message", (topic, message) => {
+    $("#logsContainer").prepend($('<div class="card"><div class="card-body"><h5 class="card-title">' + new Date().toISOString() + '</h5><h6 class="card-subtitle text-muted">' + topic + '</h6><p class="card-text font-monospace">' + message + '</p></div></div>'));
   });
 });
 
