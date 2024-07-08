@@ -1,0 +1,48 @@
+<div class="modal fade" id="initializeModal" tabindex="-1" aria-labelledby="initializeModalLabel">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="initializeModalLabel">Initialize Scenario</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <form id="initializeForm">
+          <div class="container">
+            <div class="row mb-3">
+              <div class="col-12 form-check">
+                <label for="initializeStart" class="form-label">Start Date</label>
+                <div class="input-group">
+                  <input type="text" class="form-control" id="initializeStart" aria-describedby="initializeStartHelp"
+                    required>
+                  <span class="input-group-text"><i class="bi bi-calendar"></i></span>
+                </div>
+                <div id="initializeStartHelp" class="form-text">Earliest possible scenario start date.</div>
+              </div>
+            </div>
+            <div class="row mb-3">
+              <div class="col-12 form-check">
+                <label for="initializeEnd" class="form-label">End Date</label>
+                <div class="input-group">
+                  <input type="text" class="form-control" id="initializeEnd" aria-describedby="initializeEndHelp"
+                    required>
+                  <span class="input-group-text"><i class="bi bi-calendar"></i></span>
+                </div>
+                <div id="initializeEndHelp" class="form-text">Latest possible scenario end date.</div>
+              </div>
+            </div>
+
+            <div class="row justify-content-between">
+              <div class="col-auto">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+              </div>
+              <div class="col-auto">
+                <button type="submit" class="btn btn-primary">Send</button>
+              </div>
+            </div>
+
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>

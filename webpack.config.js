@@ -2,11 +2,19 @@
 
 const CopyWebpackPlugin = require("copy-webpack-plugin");
 const path = require("path");
+const fs = require('fs');
 const webpack = require("webpack");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 const Dotenv = require("dotenv-webpack");
 const autoprefixer = require("autoprefixer");
 
+const templateFiles = {
+  navBar: fs.readFileSync("./src/navBar.html", {encoding: "utf-8"}),
+  cesiumContainer: fs.readFileSync("./src/cesiumContainer.html", {encoding: "utf-8"}),
+  logsPanel: fs.readFileSync("./src/logsPanel.html", {encoding: "utf-8"}),
+  initializeDialog: fs.readFileSync("./src/initializeDialog.html", {encoding: "utf-8"}),
+  loginDialog: fs.readFileSync("./src/loginDialog.html", {encoding: "utf-8"}),
+}
 
 const cesiumSource = "node_modules/cesium/Build/Cesium";
 // this is the base url for static files that CesiumJS needs to load
@@ -73,6 +81,9 @@ module.exports = {
   plugins: [
     new HtmlWebpackPlugin({
       template: "src/index.html",
+      templateParameters: {
+        templateFiles
+      }
     }),
     // Copy Cesium Assets, Widgets, and Workers to a static directory
     new CopyWebpackPlugin({

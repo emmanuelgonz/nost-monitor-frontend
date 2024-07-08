@@ -4,6 +4,8 @@ import '../scss/styles.scss'
 // Import all of Bootstrap's JS
 import * as bootstrap from 'bootstrap'
 
+import mqtt from "mqtt";
+
 import {
   Viewer,
   Ion,
@@ -25,22 +27,71 @@ const viewer = new Viewer("cesiumContainer", {
   navigationHelpButton: false,
 });
 
-import mqtt from "mqtt"; // import namespace "mqtt"
-let client = mqtt.connect("ws://test.mosquitto.org:8080"); // create a client
+const loginModal = new bootstrap.Modal(document.getElementById("loginModal"))
+loginModal.show();
 
-client.on("connect", () => {
-  client.subscribe("presence", (err) => {
-    if (!err) {
-      client.publish("presence", "Hello mqtt");
+$("#initializeForm").on("submit", (e) => {
+  e.preventDefault();
+  // TODO: send initialize command
+});
+
+$("#loginForm").on("submit", (e) => {
+  e.preventDefault();
+  // TODO: authenticate credentials
+  const username = $("#loginUsername").val();
+  const password = $("#loginPassword").val();
+  const hostname = $("#loginHostname").val();
+  const port = parseInt($("#loginPort").val());
+  const encrypted = $("#loginEncrypted").prop("checked");
+  const connectionString = "ws" + (encrypted ? "s" : "") + "://" + hostname + ":" + port;
+  console.log(connectionString)
+  let client = mqtt.connect(
+    connectionString, 
+    {
+      wsOptions: {
+        host: hostname,
+        port: port
+      }, 
+      username: username,
+      password: password,
+      reconnectPeriod: 0, 
+      connectTimeout: 1000, 
+      rejectUnauthorized: false
     }
+  );
+  client.on("error", (error) => {
+    console.log(error);
+  });
+  client.on("connect", () => {
+    loginModal.hide();
+    $("#navLogin").hide();
+    $("#navLogout").text("Logout " + $("#loginUsername").val());
+    $("#navLogout").show();
   });
 });
 
-client.on("message", (topic, message) => {
-  // message is Buffer
-  console.log(message.toString());
-  client.end();
+$("#navLogout").on("click", (e) => {
+  $("#navLogout").text("Logout");
+  $("#navLogout").hide();
+  $("#navLogin").show();
 });
+
+//  // import namespace "mqtt"
+// let client = mqtt.connect("ws://test.mosquitto.org:8080"); // create a client
+
+// client.on("connect", () => {
+//   client.subscribe("presence", (err) => {
+//     if (!err) {
+//       client.publish("presence", "Hello mqtt");
+//     }
+//   });
+// });
+
+// client.on("message", (topic, message) => {
+//   // message is Buffer
+//   console.log(message.toString());
+//   client.end();
+// });
 
 import { TempusDominus } from '@eonasdan/tempus-dominus'; 
 

@@ -1,0 +1,48 @@
+<div class="modal fade" id="loginModal" tabindex="-1" aria-labelledby="loginModalLabel" data-bs-backdrop="static" data-bs-keyboard="false">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="loginModalLabel">Client Login</h5>
+      </div>
+      <div class="modal-body">
+        <form id="loginForm">
+          <div class="container">
+            <div class="row mb-3">
+              <div class="col-6">
+                <label for="loginUsername" class="form-label">Username</label>
+                <input type="text" class="form-control" id="loginUsername" required>
+              </div>
+              <div class="col-6">
+                <label for="loginPassword" class="form-label">Password</label>
+                <input type="password" class="form-control" id="loginPassword" required>
+              </div>
+            </div>
+            <div class="row mb-3">
+              <div class="col-auto">
+                <label for="loginHostname" class="form-label">Hostname</label>
+                <input type="text" class="form-control" id="loginHostname" value="nost.smce.nasa.gov" required>
+              </div>
+              <div class="col-auto">
+                <label for="loginPort" class="form-label">Port</label>
+                <input type="number" step="1" class="form-control" id="loginPort" value="8883" required>
+              </div>
+              <div class="col-auto">
+                <label class="form-label">Options</label>
+                <div class="form-check">
+                  <input type="checkbox" class="form-check-input" id="loginEncrypted" value="" aria-describedby="loginEncrypted"
+                    checked>
+                  <label for="loginEncrypted" class="form-check-label">Encrypted (TLS/SSL)</label>
+                </div>
+              </div>
+            </div>
+            <div class="row justify-content-end">
+              <div class="col-auto">
+                <button type="submit" class="btn btn-primary" id="loginConnect">Connect</button>
+              </div>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>

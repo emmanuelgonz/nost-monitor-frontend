@@ -1,83 +1,18 @@
 <!DOCTYPE html>
 <html lang="en" class="h-100 m-0">
-  <head>
-    <meta charset="utf-8" />
-  </head>
-  <body class="h-100 m-0">
-    <div class="d-flex flex-column h-100">
-      <header class="p-2 text-bg-dark">
-        <div class="d-flex flex-wrap justify-content-between">
-          <a href="/" class="d-flex align-items-center text-white text-decoration-none">
-            <i class="bi bi-rocket-takeoff me-2"></i> NOS-T Monitor
-          </a>
-          <ul class="nav col-12 col-md-auto justify-content-center">
-            <li class="nav-link px-2 text-secondary">Commands:</li>
-            <li><a href="#" class="nav-link px-2 link-light" data-bs-toggle="modal" data-bs-target="#initializeModal"><i class="bi bi-stars me-2"></i>Initialize</a></li>
-            <li><a href="#" class="nav-link px-2 link-light"><i class="bi bi-play me-2"></i>Start</a></li>
-            <li><a href="#" class="nav-link px-2 link-light"><i class="bi bi-stop me-2"></i>Stop</a></li>
-            <li><a href="#" class="nav-link px-2 link-light"><i class="bi bi-arrow-clockwise me-2"></i>Update</a></li>
-          </ul>
-          <ul class="nav col-12 col-md-auto justify-content-center">
-            <li class="nav-link px-2 text-secondary">Tools:</li>
-            <li><a href="#" class="nav-link px-2 link-light"><i class="bi bi-lightbulb me-2"></i>Status</a></li>
-            <li><a href="#" class="nav-link px-2 link-light" data-bs-toggle="offcanvas" data-bs-target="#logs" aria-controls="logs"><i class="bi bi-file-text me-2"></i>Logs</a></li>
-          </ul>
-          <div class="text-end">
-            <button type="button" class="btn btn-outline-light me-2">Login</button>
-          </div>
-        </div>
-      </header>
-      <div class="flex-grow m-0 p-0 overflow-hidden">
-        <div class="h-100" id="cesiumContainer"></div>
-      </div>
-      <div class="offcanvas offcanvas-end" data-bs-scroll="true" data-bs-backdrop="false" tabindex="-1" id="logs" aria-labelledby="logsLabel">
-          <div class="offcanvas-header">
-              <h5 class="offcanvas-title" id="logsLabel">Logs</h5>
-              <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
-          </div>
-          <div class="offcanvas-body">
-              <div> Some text as placeholder.</div>
-          </div>
-      </div>
-      <div class="modal fade" id="initializeModal" tabindex="-1" aria-labelledby="initializeModalLabel">
-        <div class="modal-dialog">
-          <div class="modal-content">
-            <div class="modal-header">
-              <h5 class="modal-title" id="initializeModalLabel">Initialize Command</h5>
-              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-              <form id="initializeForm" action="#">
-                <div class="mb-3">
-                  <div class="form-check">
-                    <label for="initializeStart" class="form-label">Start Date</label>
-                    <div class="input-group">
-                      <input type="text" class="form-control" id="initializeStart" aria-describedby="initializeStartHelp" required>
-                      <span class="input-group-text"><i class="bi bi-calendar"></i></span>
-                    </div>
-                    <div id="initializeStartHelp" class="form-text">Earliest possible scenario start date.</div>       
-                  </div>
-                </div>
-                <div class="mb-3">
-                  <div class="form-check">
-                    <label for="initializeEnd" class="form-label">End Date</label>
-                    <div class="input-group">
-                      <input type="text" class="form-control" id="initializeEnd" aria-describedby="initializeEndHelp" required>
-                      <span class="input-group-text"><i class="bi bi-calendar"></i></span>
-                    </div>
-                    <div id="initializeEndHelp" class="form-text">Latest possible scenario end date.</div>      
-                  </div>
-                </div>
-                <button type="submit" class="btn btn-primary">Send</button>              
-              </form>
-            </div>
-            <div class="modal-footer">
-              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-            </div>
-          </div>
-        </div>
-      </div>
-      
-    </div>
-  </body>
+
+<head>
+  <meta charset="utf-8" />
+</head>
+
+<body class="h-100 m-0">
+  <div class="d-flex flex-column h-100">
+    <%= templateFiles.navBar %>
+    <%= templateFiles.cesiumContainer %>
+    <%= templateFiles.logsPanel %>
+    <%= templateFiles.initializeDialog %>
+    <%= templateFiles.loginDialog %>
+  </div>
+</body>
+
 </html>
