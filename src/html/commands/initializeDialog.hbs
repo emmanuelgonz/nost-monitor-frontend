@@ -10,24 +10,20 @@
           <div class="container">
             <div class="row mb-3">
               <div class="col-12 form-check">
-                <label for="initializeStart" class="form-label">Start Date</label>
-                <div class="input-group">
-                  <input type="text" class="form-control" id="initializeStart" aria-describedby="initializeStartHelp"
-                    required>
-                  <span class="input-group-text"><i class="bi bi-calendar"></i></span>
-                </div>
-                <div id="initializeStartHelp" class="form-text">Earliest possible scenario start date.</div>
+                <label for="initializeRequiredApps" class="form-label">Required Applications</label>
+                  <input type="text" class="form-control" id="initializeRequiredApps" aria-describedby="initializeRequiredAppsHelp">
+                <div id="initializeRequiredAppsHelp" class="form-text">Comma-delimited list of required applications.</div>
               </div>
             </div>
             <div class="row mb-3">
               <div class="col-12 form-check">
-                <label for="initializeEnd" class="form-label">End Date</label>
+                <label for="initializeStartEnd" class="form-label">Scenario Interval</label>
                 <div class="input-group">
-                  <input type="text" class="form-control" id="initializeEnd" aria-describedby="initializeEndHelp"
+                  <input type="text" class="form-control" id="initializeStartEnd" aria-describedby="initializeStartEndHelp"
                     required>
                   <span class="input-group-text"><i class="bi bi-calendar"></i></span>
                 </div>
-                <div id="initializeEndHelp" class="form-text">Latest possible scenario end date.</div>
+                <div id="initializeStartEndHelp" class="form-text">Earliest possible scenario start and latest possible scenario end.</div>
               </div>
             </div>
 

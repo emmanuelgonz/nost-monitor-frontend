@@ -16,7 +16,12 @@ const cesiumBaseUrl = "cesiumStatic";
 module.exports = {
   context: __dirname,
   entry: {
-    app: "./src/js/main.js",
+    app: [
+      "./src/js/main.js",
+      "./src/js/cesium.js",
+      "./src/js/login.js",
+      "./src/js/commands/initialize.js",
+    ]
   },
   output: {
     filename: "app.js",
