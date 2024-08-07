@@ -76,7 +76,7 @@ module.exports = {
   },
   plugins: [
     new HtmlWebpackPlugin({
-      template: "src/index.hbs"
+      template: "src/html/index.hbs"
     }),
     // Copy Cesium Assets, Widgets, and Workers to a static directory
     new CopyWebpackPlugin({
