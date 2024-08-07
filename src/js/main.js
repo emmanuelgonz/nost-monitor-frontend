@@ -20,6 +20,7 @@ Ion.defaultAccessToken = process.env.CESIUM_TOKEN;
 // Other environment variables
 $("#loginPrefix").val(process.env.DEFAULT_PREFIX);
 $("#loginUsername").val(process.env.DEFAULT_USERNAME);
+$("#loginPassword").val(process.env.DEFAULT_PASSWORD);
 $("#loginHostname").val(process.env.DEFAULT_HOSTNAME);
 $("#loginPort").val(process.env.DEFAULT_PORT);
 
@@ -62,6 +63,7 @@ $("#loginForm").on("submit", (e) => {
   );
   client.on("error", (error) => {
     console.log(error);
+    loginModal.hide();
   });
   client.on("connect", () => {
     client.subscribe($("#loginPrefix").val(), (err) => {
