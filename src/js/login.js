@@ -1,4 +1,5 @@
 import * as bootstrap from "bootstrap";
+import $ from "jquery";
 
 import { connect } from "./main";
 
@@ -40,7 +41,7 @@ $("#loginForm").on("submit", (e) => {
   });
 });
 
-$("#navLogout").on("click", (e) => {
+$("#navLogout").on("click", () => {
   $("#navLogout").text("Logout");
   $("#navLogout").hide();
   $("#navLogin").show();

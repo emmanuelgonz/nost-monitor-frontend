@@ -1,4 +1,5 @@
 import { TempusDominus } from "@eonasdan/tempus-dominus";
+import $ from "jquery";
 import { convertDateTimeToUTC } from "../utils";
 
 const stopTime = new TempusDominus(document.getElementById("stopTime"), {

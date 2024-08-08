@@ -13,3 +13,5 @@ const viewer = new Viewer("cesiumContainer", {
   sceneModePicker: false,
   navigationHelpButton: false,
 });
+
+export { viewer };

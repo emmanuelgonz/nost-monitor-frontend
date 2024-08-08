@@ -1,6 +1,5 @@
-// Import our custom CSS
 import "../scss/styles.scss";
-
+import $ from "jquery";
 import mqtt from "mqtt";
 
 let client = null;
