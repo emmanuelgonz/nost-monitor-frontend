@@ -5,11 +5,17 @@
   </head>
 
   <body>
-    <div class="d-flex flex-column vh-100">
-      {{> navBar }}
-      <div id="cesiumContainer" class="flex-grow-1 overflow-auto"></div>
+    <div class="container-fluid p-0">
+      <div class="row flex-nowrap">
+        <main class="col-sm col">
+          <div class="d-flex flex-column vh-100">
+            {{> navBar }}
+            <div id="cesiumContainer" class="flex-grow-1 overflow-auto"></div>
+          </div>
+        </main>
+        {{> logsPanel }}
+      </div>
     </div>
-    {{> logsPanel }}
     {{> commands/initializeDialog }}
     {{> commands/startDialog }}
     {{> commands/stopDialog }}

@@ -5,10 +5,10 @@
       class="d-flex align-items-center text-white text-decoration-none"
     >
       <i class="bi bi-rocket-takeoff me-2"></i>
-      NOS-T Monitor
+      NOS-T <span class="d-none d-lg-block">Monitor</span>
     </a>
     <ul class="nav col-12 col-md-auto justify-content-center">
-      <li class="nav-link px-2 text-secondary">Commands:</li>
+      <li class="nav-link d-none d-lg-block px-2 text-secondary">Commands:</li>
       <li>
         <a
           href="#"
@@ -47,19 +47,19 @@
       </li>
     </ul>
     <ul class="nav col-12 col-md-auto justify-content-center">
-      <li class="nav-link px-2 text-secondary">Tools:</li>
-      <li>
+      <li class="nav-link d-none d-lg-block px-2 text-secondary">Tools:</li>
+      {{!-- <li>
         <a href="#" class="nav-link px-2 link-light"
           ><i class="bi bi-lightbulb me-2"></i>Status</a
         >
-      </li>
+      </li> --}}
       <li>
         <a
           href="#"
           class="nav-link px-2 link-light"
-          data-bs-toggle="offcanvas"
-          data-bs-target="#logs"
-          aria-controls="logs"
+          data-bs-toggle="collapse"
+          data-bs-target="#logsPanel"
+          aria-controls="logsPanel"
           ><i class="bi bi-file-text me-2"></i>Logs</a
         >
       </li>

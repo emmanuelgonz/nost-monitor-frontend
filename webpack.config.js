@@ -19,6 +19,7 @@ module.exports = {
       "./src/js/main.js",
       "./src/js/cesium.js",
       "./src/js/login.js",
+      "./src/js/logs.js",
       "./src/js/commands/initialize.js",
       "./src/js/commands/start.js",
       "./src/js/commands/stop.js",

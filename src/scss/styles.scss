@@ -4,3 +4,9 @@
 @import "bootstrap-icons/font/bootstrap-icons.css";
 
 @import "@eonasdan/tempus-dominus/src/scss/tempus-dominus.scss";
+
+@import "highlight.js/scss/default.scss";
+
+#logsPanel {
+    width: 33%;
+}

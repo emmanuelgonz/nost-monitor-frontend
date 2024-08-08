@@ -37,6 +37,7 @@
     "bootstrap-icons": "^1.11.3",
     "cesium": "^1.118.2",
     "handlebars-loader": "^1.7.3",
+    "highlight.js": "^11.10.0",
     "jquery": "^3.7.1",
     "lodash": "^4.17.21",
     "mqtt": "^5.7.0"
