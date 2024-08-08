@@ -1,6 +1,6 @@
-import * as bootstrap from 'bootstrap'
+import * as bootstrap from "bootstrap";
 
-import { connect } from "./main"
+import { connect } from "./main";
 
 // load environment variables
 $("#loginPrefix").val(process.env.DEFAULT_PREFIX);
@@ -9,7 +9,7 @@ $("#loginPassword").val(process.env.DEFAULT_PASSWORD);
 $("#loginHostname").val(process.env.DEFAULT_HOSTNAME);
 $("#loginPort").val(process.env.DEFAULT_PORT);
 
-const loginModal = new bootstrap.Modal(document.getElementById("loginModal"))
+const loginModal = new bootstrap.Modal(document.getElementById("loginModal"));
 loginModal.show();
 
 $("#loginForm").on("submit", (e) => {
@@ -20,11 +20,18 @@ $("#loginForm").on("submit", (e) => {
   const hostname = $("#loginHostname").val();
   const port = parseInt($("#loginPort").val());
   const encrypted = $("#loginEncrypted").prop("checked");
-  const connectionString = "mqtt" + (encrypted ? "s" : "") + "://" + hostname + ":" + port;
+  const connectionString =
+    "mqtt" + (encrypted ? "s" : "") + "://" + hostname + ":" + port;
   connect(connectionString, username, password, (err) => {
-    if(!err) {
+    if (!err) {
       $("#navLogin").hide();
-      $("#navLogout").text("Logout " + $("#loginUsername").val() + " (" + $("#loginPrefix").val() + ")");
+      $("#navLogout").text(
+        "Logout " +
+          $("#loginUsername").val() +
+          " (" +
+          $("#loginPrefix").val() +
+          ")",
+      );
       $("#navLogout").show();
     } else {
       console.log(err);
