@@ -1,0 +1,34 @@
+<div class="modal fade" id="stopModal" tabindex="-1" aria-labelledby="stopModalLabel">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="stopModalLabel">Stop Scenario Execution</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <form id="stopForm">
+          <div class="container">
+            <div class="row mb-3">
+              <div class="col-12 form-check">
+                <label for="stopTime" class="form-label">Scenario End (UTC)</label>
+                <div class="input-group" id="stopTime" data-td-target-input="nearest" data-td-target-toggle="nearest">
+                  <input id="stopTimeInput" type="text" class="form-control" data-td-target="#stopTime" aria-describedby="stopTimeHelp" required>
+                  <span class="input-group-text" data-td-target="#stopTime" data-td-toggle="datetimepicker"><i class="bi bi-calendar"></i></span>
+                </div>
+                <div id="stopTimeHelp" class="form-text">New scenario ending time.</div>
+              </div>
+            </div>
+            <div class="row justify-content-between">
+              <div class="col-auto">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+              </div>
+              <div class="col-auto">
+                <button type="submit" class="btn btn-primary">Send</button>
+              </div>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,7 +1,10 @@
 import { TempusDominus } from '@eonasdan/tempus-dominus'; 
 import { convertDateTimeToUTC } from '../utils'
+import { startInterval } from './start'
+import { stopTime } from './stop'
+import { updateTime } from './update'
 
-const initializePicker = new TempusDominus(document.getElementById('initializeStartEnd'), {
+const initializeInterval = new TempusDominus(document.getElementById('initializeInterval'), {
   dateRange: true,
   multipleDatesSeparator: " - ",
   display: {
@@ -29,8 +32,29 @@ $("#initializeForm").on("submit", (e) => {
     console.log({
       "tasking_parameters": {
         "required_apps": $("#initializeRequiredApps").val().split(",").map(s => s.trim()),
-        "sim_start_time": convertDateTimeToUTC(initializePicker.dates.picked[0]).toISOString(),
-        "sim_stop_time": convertDateTimeToUTC(initializePicker.dates.picked[1]).toISOString(),
+        "sim_start_time": convertDateTimeToUTC(initializeInterval.dates.picked[0]).toISOString(),
+        "sim_stop_time": convertDateTimeToUTC(initializeInterval.dates.picked[1]).toISOString(),
+      }
+    });
+    startInterval.updateOptions({
+      "restrictions": {
+        "minDate": initializeInterval.dates.picked[0],
+        "maxDate": initializeInterval.dates.picked[1]
+      }
+    });
+    startInterval.dates.clear();
+    startInterval.dates.setValue(initializeInterval.dates.picked[0], 0);
+    startInterval.dates.setValue(initializeInterval.dates.picked[1], 1);
+    updateTime.updateOptions({
+      "restrictions": {
+        "minDate": initializeInterval.dates.picked[0],
+        "maxDate": initializeInterval.dates.picked[1]
+      }
+    });
+    stopTime.updateOptions({
+      "restrictions": {
+        "minDate": initializeInterval.dates.picked[0],
+        "maxDate": initializeInterval.dates.picked[1]
       }
     });
 });

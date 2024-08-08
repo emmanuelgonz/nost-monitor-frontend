@@ -1,0 +1,51 @@
+<div class="modal fade" id="startModal" tabindex="-1" aria-labelledby="startModalLabel">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="startModalLabel">Start Scenario Execution</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <form id="startForm">
+          <div class="container">
+            <div class="row mb-3">
+              <div class="col-12 form-check">
+                <label for="startIntervalInput" class="form-label">Scenario Interval (UTC)</label>
+                <div class="input-group" id="startInterval" data-td-target-input="nearest" data-td-target-toggle="nearest">
+                  <input id="startIntervalInput" type="text" class="form-control" data-td-target="#startInterval" aria-describedby="startInterval" required>
+                  <span class="input-group-text" data-td-target="#startInterval" data-td-toggle="datetimepicker"><i class="bi bi-calendar"></i></span>
+                </div>
+                <div id="startIntervalHelp" class="form-text">Starting and ending scenario time.</div>
+              </div>
+            </div>
+            <div class="row mb-3">
+              <div class="col-8 form-check">
+                <label for="startTimeInput" class="form-label">Execution Start (UTC)</label>
+                <div class="input-group" id="startTime" data-td-target-input="nearest" data-td-target-toggle="nearest">
+                  <input id="startTimeInput" type="text" class="form-control" data-td-target="#startTime" aria-describedby="startTimeHelp">
+                  <span class="input-group-text" data-td-target="#startTime" data-td-toggle="datetimepicker"><i class="bi bi-calendar"></i></span>
+                </div>
+                <div id="startTimeHelp" class="form-text">Scheduled execution start (default: start immediately).</div>
+              </div>
+              <div class="col-4 form-check">
+                <label for="startTimeScale" class="form-label">Time Scale</label>
+                <div class="input-group">
+                  <input type="number" min="0.1", step="0.1", value="1", class="form-control" id="startTimeScale" aria-describedby="startTimeScaleHelp" required>
+                </div>
+                <div id="startTimeScaleHelp" class="form-text">Scenario seconds per second.</div>
+              </div>
+            </div>
+            <div class="row justify-content-between">
+              <div class="col-auto">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+              </div>
+              <div class="col-auto">
+                <button type="submit" class="btn btn-primary">Send</button>
+              </div>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
