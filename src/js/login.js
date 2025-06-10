@@ -1,48 +1,46 @@
 import * as bootstrap from "bootstrap";
 import $ from "jquery";
-
+import Keycloak from "keycloak-js";
 import { connect } from "./main";
 
-// load environment variables
-$("#loginPrefix").val(process.env.DEFAULT_PREFIX);
-$("#loginUsername").val(process.env.DEFAULT_USERNAME);
-$("#loginPassword").val(process.env.DEFAULT_PASSWORD);
-$("#loginHostname").val(process.env.DEFAULT_HOSTNAME);
-$("#loginPort").val(process.env.DEFAULT_PORT);
+// Keycloak configuration for user authentication
+const KEYCLOAK_HOST = process.env.KEYCLOAK_HOST;
+const KEYCLOAK_PORT = process.env.KEYCLOAK_PORT;
+const url = `https://${KEYCLOAK_HOST}:${KEYCLOAK_PORT}`;
 
-const loginModal = new bootstrap.Modal(document.getElementById("loginModal"));
-loginModal.show();
+const keycloak = new Keycloak({
+  url: url,
+  realm: process.env.KEYCLOAK_REALM,
+  clientId: process.env.KEYCLOAK_CLIENT_ID,
+});
 
-$("#loginForm").on("submit", (e) => {
-  e.preventDefault();
-  // TODO: authenticate credentials
-  const username = $("#loginUsername").val();
-  const password = $("#loginPassword").val();
-  const hostname = $("#loginHostname").val();
-  const port = parseInt($("#loginPort").val());
-  const encrypted = $("#loginEncrypted").prop("checked");
-  const connectionString =
-    "mqtt" + (encrypted ? "s" : "") + "://" + hostname + ":" + port;
-  connect(connectionString, username, password, (err) => {
-    if (!err) {
-      $("#navLogin").hide();
-      $("#navLogout").text(
-        "Logout " +
-          $("#loginUsername").val() +
-          " (" +
-          $("#loginPrefix").val() +
-          ")",
-      );
-      $("#navLogout").show();
+keycloak
+  .init({ onLoad: "login-required" })
+  .then(function (authenticated) {
+    if (authenticated) {
+      startApplication();
     } else {
-      console.log(err);
+      console.error("User not authenticated");
     }
-    loginModal.hide();
+  })
+  .catch(function () {
+    console.error("Failed to initialize Keycloak");
   });
-});
 
-$("#navLogout").on("click", () => {
-  $("#navLogout").text("Logout");
-  $("#navLogout").hide();
-  $("#navLogin").show();
-});
+function startApplication() {
+  // Optionally, set user info in the UI
+  $("#navLogin").hide();
+  $("#navLogout")
+    .text("Logout " + keycloak.tokenParsed.preferred_username)
+    .show();
+
+  // Connect to AMQP using the access token
+  connect(keycloak.token);
+
+  // Logout handler
+  $("#navLogout").on("click", () => {
+    keycloak.logout();
+    $("#navLogout").text("Logout").hide();
+    $("#navLogin").show();
+  });
+}
