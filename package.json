@@ -31,6 +31,7 @@
     "webpack-dev-server": "^4.15.2"
   },
   "dependencies": {
+    "@cloudamqp/amqp-client": "^3.2.1",
     "@eonasdan/tempus-dominus": "^6.9.9",
     "@popperjs/core": "^2.11.8",
     "bootstrap": "^5.3.3",
@@ -39,6 +40,7 @@
     "handlebars-loader": "^1.7.3",
     "highlight.js": "^11.10.0",
     "jquery": "^3.7.1",
+    "keycloak-js": "^26.2.0",
     "lodash": "^4.17.21",
     "mqtt": "^5.7.0"
   }
