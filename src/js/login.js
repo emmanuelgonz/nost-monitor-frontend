@@ -8,11 +8,7 @@ const KEYCLOAK_HOST = process.env.DEFAULT_KEYCLOAK_HOST;
 const KEYCLOAK_PORT = process.env.DEFAULT_KEYCLOAK_PORT;
 const KEYCLOAK_REALM = process.env.DEFAULT_KEYCLOAK_REALM;
 const KEYCLOAK_CLIENT_ID = process.env.DEFAULT_KEYCLOAK_CLIENT_ID;
-const BROKER_CLIENT_SECRET = process.env.DEFAULT_BROKER_CLIENT_SECRET; // Add this to your env
-const RABBITMQ_HOST = process.env.DEFAULT_RABBITMQ_HOST;
-const RABBITMQ_RELAY_PORT = process.env.DEFAULT_RABBITMQ_RELAY_PORT;
-
-const AUTH_PORT = KEYCLOAK_PORT; // Assuming same as KEYCLOAK_PORT
+const KEYCLOAK_CLIENT_SECRET = process.env.DEFAULT_KEYCLOAK_CLIENT_SECRET;
 
 const keycloak = new Keycloak({
   url: `https://${KEYCLOAK_HOST}:${KEYCLOAK_PORT}/`,
@@ -34,14 +30,14 @@ keycloak
   });
 
 function fetchAccessToken() {
-  return fetch(`https://${KEYCLOAK_HOST}:${AUTH_PORT}/realms/${KEYCLOAK_REALM}/protocol/openid-connect/token`, {
+  return fetch(`https://${KEYCLOAK_HOST}:${KEYCLOAK_PORT}/realms/${KEYCLOAK_REALM}/protocol/openid-connect/token`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/x-www-form-urlencoded'
     },
     body: new URLSearchParams({
       'client_id': KEYCLOAK_CLIENT_ID,
-      'client_secret': BROKER_CLIENT_SECRET,
+      'client_secret': KEYCLOAK_CLIENT_SECRET,
       'grant_type': 'client_credentials'
     })
   })
