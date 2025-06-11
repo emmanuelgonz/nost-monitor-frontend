@@ -40,6 +40,8 @@ function startApplication() {
     .text("Logout " + keycloak.tokenParsed.preferred_username)
     .show();
 
+    console.log("User authenticated:", keycloak.tokenParsed.preferred_username);
+    console.log("Access Token:", keycloak.tokenParsed);
   // Connect to AMQP using the access token
   connect(keycloak.token);
 
