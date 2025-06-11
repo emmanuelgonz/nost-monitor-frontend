@@ -1,18 +1,18 @@
 import * as bootstrap from "bootstrap";
 import $ from "jquery";
 import Keycloak from "keycloak-js";
-import { connect } from "./main";
+import { connect, updateAmqpToken } from "./main";
 
 // Keycloak configuration for user authentication
 const KEYCLOAK_HOST = process.env.DEFAULT_KEYCLOAK_HOST;
 const KEYCLOAK_PORT = process.env.DEFAULT_KEYCLOAK_PORT;
 const KEYCLOAK_REALM = process.env.DEFAULT_KEYCLOAK_REALM;
 const KEYCLOAK_CLIENT_ID = process.env.DEFAULT_KEYCLOAK_CLIENT_ID;
+const BROKER_CLIENT_SECRET = process.env.DEFAULT_BROKER_CLIENT_SECRET; // Add this to your env
+const RABBITMQ_HOST = process.env.DEFAULT_RABBITMQ_HOST;
+const RABBITMQ_RELAY_PORT = process.env.DEFAULT_RABBITMQ_RELAY_PORT;
 
-// console.log('KEYCLOAK_HOST:', KEYCLOAK_HOST);
-// console.log('KEYCLOAK_PORT:', KEYCLOAK_PORT);
-// console.log('KEYCLOAK_REALM:', KEYCLOAK_REALM);
-// console.log('KEYCLOAK_CLIENT_ID:', KEYCLOAK_CLIENT_ID);
+const AUTH_PORT = KEYCLOAK_PORT; // Assuming same as KEYCLOAK_PORT
 
 const keycloak = new Keycloak({
   url: `https://${KEYCLOAK_HOST}:${KEYCLOAK_PORT}/`,
@@ -33,19 +33,64 @@ keycloak
     console.error("Failed to initialize Keycloak");
   });
 
+function fetchAccessToken() {
+  return fetch(`https://${KEYCLOAK_HOST}:${AUTH_PORT}/realms/${KEYCLOAK_REALM}/protocol/openid-connect/token`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/x-www-form-urlencoded'
+    },
+    body: new URLSearchParams({
+      'client_id': KEYCLOAK_CLIENT_ID,
+      'client_secret': BROKER_CLIENT_SECRET,
+      'grant_type': 'client_credentials'
+    })
+  })
+    .then(response => {
+      if (response.ok) {
+        return response.json();
+      } else {
+        return response.text().then(text => {
+          console.error("Failed to obtain access token:", text);
+          throw new Error('Failed to obtain access token');
+        });
+      }
+    })
+    .then(data => {
+      return data.access_token;
+    })
+    .catch(error => {
+      console.error(error);
+    });
+}
+
+function startTokenRefresh() {
+  setInterval(() => {
+    fetchAccessToken().then(newToken => {
+      if (newToken) {
+        updateAmqpToken(newToken); // Call update in main.js
+        console.log("Access token refreshed.");
+      }
+    });
+  }, 3 * 60 * 1000); // Refresh every 3 minutes
+}
+
 function startApplication() {
-  // Optionally, set user info in the UI
   $("#navLogin").hide();
   $("#navLogout")
     .text("Logout " + keycloak.tokenParsed.preferred_username)
     .show();
 
   console.log("User authenticated:", keycloak.tokenParsed.preferred_username);
-  console.log("Access Token:", keycloak.token);
-  // Connect to AMQP using the access token
-  connect(keycloak.token);
 
-  // Logout handler
+  fetchAccessToken().then(token => {
+    if (token) {
+      connect(token);
+      startTokenRefresh();
+    } else {
+      console.error("Could not fetch AMQP access token.");
+    }
+  });
+
   $("#navLogout").on("click", () => {
     keycloak.logout();
     $("#navLogout").text("Logout").hide();
