@@ -26,13 +26,18 @@ async function connect(accessToken) {
   console.log("AMQP client successfully created:", amqp);
   try {
     amqpConn = await amqp.connect();
+    console.log("AMQP connection established:", amqpConn);
     amqpChannel = await amqpConn.channel();
+    console.log("AMQP channel created:", amqpChannel);
     await amqpChannel.exchangeDeclare(RABBITMQ_EXCHANGE, "topic", {
       durable: false,
       autoDelete: true,
     });
+    console.log("AMQP exchange declared:", RABBITMQ_EXCHANGE);
     const q = await amqpChannel.queue("", { exclusive: true });
+    console.log("AMQP temporary queue created:", q.name);
     await q.bind(RABBITMQ_EXCHANGE, `${RABBITMQ_EXCHANGE}.#`);
+    console.log("AMQP queue bound to exchange with routing key:", `${RABBITMQ_EXCHANGE}.#`);
     await q.subscribe({ noAck: true }, (msg) => {
       const topic = msg.routingKey;
       const payload = JSON.parse(msg.bodyToString());
