@@ -11,7 +11,8 @@ async function connect(accessToken) {
   const RABBITMQ_HOST = process.env.DEFAULT_RABBITMQ_HOST;
   const RABBITMQ_RELAY_PORT = process.env.DEFAULT_RABBITMQ_RELAY_PORT;
   const RABBITMQ_EXCHANGE = process.env.DEFAULT_RABBITMQ_EXCHANGE;
-  const url = `wss://${RABBITMQ_HOST}:${RABBITMQ_RELAY_PORT}`;
+  const tls = window.location.protocol === "https:";
+  const url = `${tls ? "wss" : "ws"}://${RABBITMQ_HOST}:${RABBITMQ_RELAY_PORT}`;
 
   const amqp = new AMQPWebSocketClient(url, "/", "", accessToken);
 
