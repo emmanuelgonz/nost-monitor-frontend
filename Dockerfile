@@ -6,4 +6,4 @@ RUN npm install -g webpack webpack-cli
 COPY . .
 RUN npm run build
 
-CMD ["npm", "run", "start"]
+# CMD ["npm", "run", "start"]
