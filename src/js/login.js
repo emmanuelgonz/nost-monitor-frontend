@@ -4,14 +4,20 @@ import Keycloak from "keycloak-js";
 import { connect } from "./main";
 
 // Keycloak configuration for user authentication
-const KEYCLOAK_HOST = process.env.KEYCLOAK_HOST;
-const KEYCLOAK_PORT = process.env.KEYCLOAK_PORT;
-const url = `https://${KEYCLOAK_HOST}:${KEYCLOAK_PORT}`;
+const KEYCLOAK_HOST = process.env.DEFAULT_KEYCLOAK_HOST;
+const KEYCLOAK_PORT = process.env.DEFAULT_KEYCLOAK_PORT;
+const KEYCLOAK_REALM = process.env.DEFAULT_KEYCLOAK_REALM;
+const KEYCLOAK_CLIENT_ID = process.env.DEFAULT_KEYCLOAK_CLIENT_ID;
+
+console.log('KEYCLOAK_HOST:', KEYCLOAK_HOST);
+console.log('KEYCLOAK_PORT:', KEYCLOAK_PORT);
+console.log('KEYCLOAK_REALM:', KEYCLOAK_REALM);
+console.log('KEYCLOAK_CLIENT_ID:', KEYCLOAK_CLIENT_ID);
 
 const keycloak = new Keycloak({
-  url: url,
-  realm: process.env.KEYCLOAK_REALM,
-  clientId: process.env.KEYCLOAK_CLIENT_ID,
+  url: `https://${KEYCLOAK_HOST}:${KEYCLOAK_PORT}/`,
+  realm: KEYCLOAK_REALM,
+  clientId: KEYCLOAK_CLIENT_ID,
 });
 
 keycloak
