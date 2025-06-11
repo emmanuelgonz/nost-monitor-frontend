@@ -9,10 +9,10 @@ const KEYCLOAK_PORT = process.env.DEFAULT_KEYCLOAK_PORT;
 const KEYCLOAK_REALM = process.env.DEFAULT_KEYCLOAK_REALM;
 const KEYCLOAK_CLIENT_ID = process.env.DEFAULT_KEYCLOAK_CLIENT_ID;
 
-console.log('KEYCLOAK_HOST:', KEYCLOAK_HOST);
-console.log('KEYCLOAK_PORT:', KEYCLOAK_PORT);
-console.log('KEYCLOAK_REALM:', KEYCLOAK_REALM);
-console.log('KEYCLOAK_CLIENT_ID:', KEYCLOAK_CLIENT_ID);
+// console.log('KEYCLOAK_HOST:', KEYCLOAK_HOST);
+// console.log('KEYCLOAK_PORT:', KEYCLOAK_PORT);
+// console.log('KEYCLOAK_REALM:', KEYCLOAK_REALM);
+// console.log('KEYCLOAK_CLIENT_ID:', KEYCLOAK_CLIENT_ID);
 
 const keycloak = new Keycloak({
   url: `https://${KEYCLOAK_HOST}:${KEYCLOAK_PORT}/`,
@@ -41,7 +41,7 @@ function startApplication() {
     .show();
 
   console.log("User authenticated:", keycloak.tokenParsed.preferred_username);
-  console.log("Access Token:", keycloak.tokenParsed);
+  console.log("Access Token:", keycloak.token);
   // Connect to AMQP using the access token
   connect(keycloak.token);
 

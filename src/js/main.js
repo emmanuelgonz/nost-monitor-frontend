@@ -12,13 +12,15 @@ async function connect(accessToken) {
   const RABBITMQ_RELAY_PORT = process.env.DEFAULT_RABBITMQ_RELAY_PORT;
   const RABBITMQ_EXCHANGE = process.env.DEFAULT_RABBITMQ_EXCHANGE;
   const tls = window.location.protocol === "https:";
-  console.log("RABBITMQ_HOST:", RABBITMQ_HOST);
-  console.log("RABBITMQ_RELAY_PORT:", RABBITMQ_RELAY_PORT);
-  console.log("RABBITMQ_EXCHANGE:", RABBITMQ_EXCHANGE);
-  console.log("TLS enabled:", tls);
-  
+
+  // console.log("RABBITMQ_HOST:", RABBITMQ_HOST);
+  // console.log("RABBITMQ_RELAY_PORT:", RABBITMQ_RELAY_PORT);
+  // console.log("RABBITMQ_EXCHANGE:", RABBITMQ_EXCHANGE);
+  // console.log("TLS enabled:", tls);
+
   const url = `${tls ? "wss" : "ws"}://${RABBITMQ_HOST}:${RABBITMQ_RELAY_PORT}`;
 
+  console.log("Connecting to AMQP broker at:", url);
   const amqp = new AMQPWebSocketClient(url, "/", "", accessToken);
 
   try {
