@@ -23,17 +23,7 @@ async function connect(accessToken) {
   console.log("Connecting to AMQP broker at:", url);
 
   const amqp = new AMQPWebSocketClient(url, "/", "", accessToken);
-  console.log("AMQP client created with access token:", accessToken);
-  console.log("AMQP client version:", amqp.version);
-  console.log("AMQP client user agent:", amqp.userAgent);
-  console.log("AMQP client TLS enabled:", amqp.tlsEnabled);
-  console.log("AMQP client TLS version:", amqp.tlsVersion);
-  console.log("AMQP client TLS cipher:", amqp.tlsCipher);
-  console.log("AMQP client TLS session ID:", amqp.tlsSessionId);
-  console.log("AMQP client TLS peer certificate:", amqp.tlsPeerCertificate);
-  console.log("AMQP client TLS peer certificate subject:", amqp.tlsPeerCertificateSubject);
-  console.log("AMQP client TLS peer certificate issuer:", amqp.tlsPeerCertificateIssuer);
-
+  console.log("AMQP client successfully created:", amqp);
   try {
     amqpConn = await amqp.connect();
     amqpChannel = await amqpConn.channel();
