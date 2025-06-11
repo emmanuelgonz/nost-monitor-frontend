@@ -10,6 +10,14 @@ const KEYCLOAK_REALM = process.env.DEFAULT_KEYCLOAK_REALM;
 const KEYCLOAK_CLIENT_ID = process.env.DEFAULT_KEYCLOAK_CLIENT_ID;
 const KEYCLOAK_CLIENT_SECRET = process.env.DEFAULT_KEYCLOAK_CLIENT_SECRET;
 
+console.log("Keycloak configuration:", {
+  KEYCLOAK_HOST,
+  KEYCLOAK_PORT,
+  KEYCLOAK_REALM,
+  KEYCLOAK_CLIENT_ID,
+  KEYCLOAK_CLIENT_SECRET,
+});
+
 const keycloak = new Keycloak({
   url: `https://${KEYCLOAK_HOST}:${KEYCLOAK_PORT}/`,
   realm: KEYCLOAK_REALM,
