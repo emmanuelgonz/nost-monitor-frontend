@@ -13,8 +13,6 @@ async function connect(accessToken) {
   const tls = window.location.protocol === "https:";
   const url = `${tls ? "wss" : "ws"}://${RABBITMQ_HOST}:${RABBITMQ_RELAY_PORT}`;
 
-  console.log("Connecting to AMQP broker at:", url);
-
   amqp = new AMQPWebSocketClient(url, "/", "", accessToken);
   try {
     amqpConn = await amqp.connect();
