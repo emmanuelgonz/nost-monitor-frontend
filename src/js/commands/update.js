@@ -1,6 +1,7 @@
 import { TempusDominus } from "@eonasdan/tempus-dominus";
 import $ from "jquery";
 import { convertDateTimeToUTC } from "../utils";
+import { amqpChannel } from "../main";
 
 const updateTime = new TempusDominus(document.getElementById("updateTime"), {
   display: {
@@ -22,10 +23,12 @@ const updateTime = new TempusDominus(document.getElementById("updateTime"), {
   },
 });
 
-$("#updateForm").on("submit", (e) => {
+$("#updateForm").on("submit", async (e) => {
   e.preventDefault();
-  // TODO: send start command
-  console.log({
+  const RABBITMQ_EXCHANGE = process.env.DEFAULT_RABBITMQ_EXCHANGE;
+  const routingKey = `${RABBITMQ_EXCHANGE}.update`;
+
+  const message = {
     tasking_parameters: {
       sim_update_time: convertDateTimeToUTC(
         updateTime.dates.lastPicked,
@@ -34,7 +37,22 @@ $("#updateForm").on("submit", (e) => {
         ? Number.parseFloat($("#updateTimeScale").val())
         : null,
     },
-  });
+  };
+
+  if (amqpChannel) {
+    try {
+      await amqpChannel.basicPublish(
+        RABBITMQ_EXCHANGE,
+        routingKey,
+        JSON.stringify(message)
+      );
+      console.log("Update command sent:", message);
+    } catch (err) {
+      console.error("Failed to send update command:", err);
+    }
+  } else {
+    console.warn("AMQP channel not ready.");
+  }
 });
 
 export { updateTime };
