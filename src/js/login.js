@@ -21,7 +21,7 @@ console.log("Keycloak configuration:", {
 const keycloak = new Keycloak({
   url: `https://${KEYCLOAK_HOST}:${KEYCLOAK_PORT}/`,
   realm: KEYCLOAK_REALM,
-  clientId: `sos_nodejs`,
+  clientId: KEYCLOAK_CLIENT_ID,
 });
 
 keycloak
