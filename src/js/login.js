@@ -7,6 +7,7 @@ import { connect, updateAmqpToken } from "./main";
 const KEYCLOAK_HOST = process.env.DEFAULT_KEYCLOAK_HOST;
 const KEYCLOAK_PORT = process.env.DEFAULT_KEYCLOAK_PORT;
 const KEYCLOAK_REALM = process.env.DEFAULT_KEYCLOAK_REALM;
+const KEYCLOAK_WEB_LOGIN_CLIENT_ID = process.env.DEFAULT_KEYCLOAK_WEB_LOGIN_CLIENT_ID;
 const KEYCLOAK_CLIENT_ID = process.env.DEFAULT_KEYCLOAK_CLIENT_ID;
 const KEYCLOAK_CLIENT_SECRET = process.env.DEFAULT_KEYCLOAK_CLIENT_SECRET;
 
@@ -21,7 +22,7 @@ console.log("Keycloak configuration:", {
 const keycloak = new Keycloak({
   url: `https://${KEYCLOAK_HOST}:${KEYCLOAK_PORT}/`,
   realm: KEYCLOAK_REALM,
-  clientId: KEYCLOAK_CLIENT_ID,
+  clientId: KEYCLOAK_WEB_LOGIN_CLIENT_ID,
 });
 
 keycloak
