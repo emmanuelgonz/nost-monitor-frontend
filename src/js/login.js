@@ -11,14 +11,6 @@ const KEYCLOAK_WEB_LOGIN_CLIENT_ID = process.env.DEFAULT_KEYCLOAK_WEB_LOGIN_CLIE
 const KEYCLOAK_CLIENT_ID = process.env.DEFAULT_KEYCLOAK_CLIENT_ID;
 const KEYCLOAK_CLIENT_SECRET = process.env.DEFAULT_KEYCLOAK_CLIENT_SECRET;
 
-console.log("Keycloak configuration:", {
-  KEYCLOAK_HOST,
-  KEYCLOAK_PORT,
-  KEYCLOAK_REALM,
-  KEYCLOAK_CLIENT_ID,
-  KEYCLOAK_CLIENT_SECRET,
-});
-
 const keycloak = new Keycloak({
   url: `https://${KEYCLOAK_HOST}:${KEYCLOAK_PORT}/`,
   realm: KEYCLOAK_REALM,
@@ -84,8 +76,6 @@ function startApplication() {
   $("#navLogout")
     .text("Logout " + keycloak.tokenParsed.preferred_username)
     .show();
-
-  console.log("User authenticated:", keycloak.tokenParsed.preferred_username);
 
   fetchAccessToken().then(token => {
     if (token) {
