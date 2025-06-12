@@ -4,6 +4,7 @@ import { convertDateTimeToUTC } from "../utils";
 import { startInterval } from "./start";
 import { stopTime } from "./stop";
 import { updateTime } from "./update";
+import { amqpChannel } from "../main";
 
 const initializeInterval = new TempusDominus(
   document.getElementById("initializeInterval"),
@@ -30,10 +31,12 @@ const initializeInterval = new TempusDominus(
   },
 );
 
-$("#initializeForm").on("submit", (e) => {
+$("#initializeForm").on("submit", async (e) => {
   e.preventDefault();
-  // TODO: send initialize command
-  console.log({
+  const RABBITMQ_EXCHANGE = process.env.DEFAULT_RABBITMQ_EXCHANGE;
+  const routingKey = `${RABBITMQ_EXCHANGE}.initialize`;
+  
+  const message = {
     tasking_parameters: {
       required_apps: $("#initializeRequiredApps")
         .val()
@@ -46,7 +49,23 @@ $("#initializeForm").on("submit", (e) => {
         initializeInterval.dates.picked[1],
       ).toISOString(),
     },
-  });
+  };
+
+  if (amqpChannel) {
+    try {
+      await amqpChannel.basicPublish(
+        RABBITMQ_EXCHANGE,
+        routingKey,
+        JSON.stringify(message)
+      );
+      console.log("Initialize command sent:", message);
+    } catch (err) {
+      console.error("Failed to send initialize command:", err);
+    }
+  } else {
+    console.warn("AMQP channel not ready.");
+  }
+
   startInterval.updateOptions({
     restrictions: {
       minDate: initializeInterval.dates.picked[0],

@@ -61,4 +61,4 @@ function handleMessage(topic, payload) {
   );
 }
 
-export { amqpConn, connect, updateAmqpToken };
+export { amqpConn, amqpChannel, connect, updateAmqpToken };
