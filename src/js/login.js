@@ -72,7 +72,7 @@ function startTokenRefresh() {
 }
 
 function startApplication() {
-  // $("#navLogin").hide();
+  $("#navLogin").hide();
   $("#navLogout")
     .text("Logout " + keycloak.tokenParsed.preferred_username)
     .show();
