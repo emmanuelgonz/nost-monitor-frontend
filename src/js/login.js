@@ -88,7 +88,7 @@ function startApplication() {
 
   $("#navLogout").on("click", () => {
     keycloak.logout();
-    $("#navLogout").text("Logout").hide();
-    $("#navLogin").show();
+    // $("#navLogout").text("Logout").hide();
+    // $("#navLogin").show();
   });
 }
