@@ -90,7 +90,6 @@ function startApplication() {
     console.log("Logging out...");
     $("#navLogout").text("Logout").hide();
     keycloak.logout();
-    
     // $("#navLogin").show();
   });
 }
