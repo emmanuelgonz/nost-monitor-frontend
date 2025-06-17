@@ -90,18 +90,6 @@ function startApplication() {
     if (exchange) {
       setUserExchange(exchange);
     }
-    // Move focus to a visible element outside the modal before hiding it
-    const $logout = $("#navLogout:visible");
-    const $login = $("#navLogin:visible");
-    if ($logout.length) {
-      $logout.focus();
-    } else if ($login.length) {
-      $login.focus();
-    } else {
-      // fallback
-      document.body.setAttribute("tabindex", "-1");
-      document.body.focus();
-    }
     exchangeModal.hide();
     fetchAccessToken().then(token => {
       if (token) {
