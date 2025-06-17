@@ -142,3 +142,4 @@ $("#loginForm").on("submit", function (e) {
       console.error("Failed to initialize Keycloak");
     });
 
+});
