@@ -19,13 +19,15 @@ $("#loginHostname").val(process.env.DEFAULT_HOSTNAME);
 $("#loginPort").val(process.env.DEFAULT_PORT);
 $("#loginExchange").val(process.env.DEFAULT_RABBITMQ_EXCHANGE);
 
-// Set Keycloak fields
+// Set Keycloak fields (do NOT pre-fill Client ID and Secret)
 $("#loginKeycloakHost").val(process.env.DEFAULT_KEYCLOAK_HOST);
 $("#loginKeycloakPort").val(process.env.DEFAULT_KEYCLOAK_PORT);
 $("#loginKeycloakRealm").val(process.env.DEFAULT_KEYCLOAK_REALM);
 $("#loginKeycloakWebLoginClientId").val(process.env.DEFAULT_KEYCLOAK_WEB_LOGIN_CLIENT_ID);
-$("#loginKeycloakClientId").val(process.env.DEFAULT_KEYCLOAK_CLIENT_ID);
-$("#loginKeycloakClientSecret").val(process.env.DEFAULT_KEYCLOAK_CLIENT_SECRET);
+
+// Do not pre-fill these:
+// $("#loginKeycloakClientId").val(process.env.DEFAULT_KEYCLOAK_CLIENT_ID);
+// $("#loginKeycloakClientSecret").val(process.env.DEFAULT_KEYCLOAK_CLIENT_SECRET);
 
 const loginModal = new bootstrap.Modal(document.getElementById("loginModal"));
 loginModal.show();
@@ -77,7 +79,39 @@ $("#loginForm").on("submit", function (e) {
   if (exchange) {
     setUserExchange(exchange);
   }
-  fetchAccessToken().then(token => {
+  // Get Keycloak values from form, fallback to env if blank
+  const keycloakClientId = $("#loginKeycloakClientId").val() || process.env.DEFAULT_KEYCLOAK_CLIENT_ID;
+  const keycloakClientSecret = $("#loginKeycloakClientSecret").val() || process.env.DEFAULT_KEYCLOAK_CLIENT_SECRET;
+  function fetchAccessTokenOverride() {
+    return fetch(`https://${KEYCLOAK_HOST}:${KEYCLOAK_PORT}/realms/${KEYCLOAK_REALM}/protocol/openid-connect/token`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded'
+      },
+      body: new URLSearchParams({
+        'client_id': keycloakClientId,
+        'client_secret': keycloakClientSecret,
+        'grant_type': 'client_credentials'
+      })
+    })
+      .then(response => {
+        if (response.ok) {
+          return response.json();
+        } else {
+          return response.text().then(text => {
+            console.error("Failed to obtain access token:", text);
+            throw new Error('Failed to obtain access token');
+          });
+        }
+      })
+      .then(data => {
+        return data.access_token;
+      })
+      .catch(error => {
+        console.error(error);
+      });
+  }
+  fetchAccessTokenOverride().then(token => {
     if (token) {
       connect(token);
       startTokenRefresh();
