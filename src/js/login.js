@@ -1,7 +1,7 @@
 import * as bootstrap from "bootstrap";
 import $ from "jquery";
 import Keycloak from "keycloak-js";
-import { connect, updateAmqpToken, userExchange } from "./main";
+import { connect, updateAmqpToken, setUserExchange } from "./main";
 
 // Keycloak configuration for user authentication
 const KEYCLOAK_HOST = process.env.DEFAULT_KEYCLOAK_HOST;
@@ -80,28 +80,16 @@ function startApplication() {
   // Prompt for exchange name after login
   let exchange = prompt("Enter RabbitMQ Exchange name:", process.env.DEFAULT_RABBITMQ_EXCHANGE);
   if (exchange) {
-    // Set the global variable
-    import("./main").then(mod => {
-      mod.userExchange = exchange;
-      fetchAccessToken().then(token => {
-        if (token) {
-          mod.connect(token);
-          startTokenRefresh();
-        } else {
-          console.error("Could not fetch AMQP access token.");
-        }
-      });
-    });
-  } else {
-    fetchAccessToken().then(token => {
-      if (token) {
-        connect(token);
-        startTokenRefresh();
-      } else {
-        console.error("Could not fetch AMQP access token.");
-      }
-    });
+    setUserExchange(exchange);
   }
+  fetchAccessToken().then(token => {
+    if (token) {
+      connect(token);
+      startTokenRefresh();
+    } else {
+      console.error("Could not fetch AMQP access token.");
+    }
+  });
 
   $("#navLogout").on("click", () => {
     keycloak.logout();
