@@ -11,24 +11,16 @@ const KEYCLOAK_WEB_LOGIN_CLIENT_ID = process.env.DEFAULT_KEYCLOAK_WEB_LOGIN_CLIE
 const KEYCLOAK_CLIENT_ID = process.env.DEFAULT_KEYCLOAK_CLIENT_ID;
 const KEYCLOAK_CLIENT_SECRET = process.env.DEFAULT_KEYCLOAK_CLIENT_SECRET;
 
-const keycloak = new Keycloak({
-  url: `https://${KEYCLOAK_HOST}:${KEYCLOAK_PORT}/`,
-  realm: KEYCLOAK_REALM,
-  clientId: KEYCLOAK_WEB_LOGIN_CLIENT_ID,
-});
+// Load environment variables into login modal fields
+$("#loginPrefix").val(process.env.DEFAULT_PREFIX);
+$("#loginUsername").val(process.env.DEFAULT_USERNAME);
+$("#loginPassword").val(process.env.DEFAULT_PASSWORD);
+$("#loginHostname").val(process.env.DEFAULT_HOSTNAME);
+$("#loginPort").val(process.env.DEFAULT_PORT);
+$("#loginExchange").val(process.env.DEFAULT_RABBITMQ_EXCHANGE);
 
-keycloak
-  .init({ onLoad: "login-required" })
-  .then(function (authenticated) {
-    if (authenticated) {
-      startApplication();
-    } else {
-      console.error("User not authenticated");
-    }
-  })
-  .catch(function () {
-    console.error("Failed to initialize Keycloak");
-  });
+const loginModal = new bootstrap.Modal(document.getElementById("loginModal"));
+loginModal.show();
 
 function fetchAccessToken() {
   return fetch(`https://${KEYCLOAK_HOST}:${KEYCLOAK_PORT}/realms/${KEYCLOAK_REALM}/protocol/openid-connect/token`, {
@@ -64,46 +56,33 @@ function startTokenRefresh() {
   setInterval(() => {
     fetchAccessToken().then(newToken => {
       if (newToken) {
-        updateAmqpToken(newToken); // Call update in main.js
+        updateAmqpToken(newToken);
         console.log("Access token refreshed.");
       }
     });
-  }, 3 * 60 * 1000); // Refresh every 3 minutes
+  }, 3 * 60 * 1000);
 }
 
-function startApplication() {
-  $("#navLogin").hide();
-  $("#navLogout")
-    .text("Logout " + keycloak.tokenParsed.preferred_username)
-    .show();
-
-  // Set default value in modal input
-  $("#exchangeInput").val(process.env.DEFAULT_RABBITMQ_EXCHANGE);
-
-  // Show the modal
-  const exchangeModal = new bootstrap.Modal(document.getElementById('exchangeModal'));
-  exchangeModal.show();
-
-  // Handle save button click
-  $("#exchangeSaveBtn").off("click").on("click", function () {
-    const exchange = $("#exchangeInput").val();
-    if (exchange) {
-      setUserExchange(exchange);
+$("#loginForm").on("submit", function (e) {
+  e.preventDefault();
+  const exchange = $("#loginExchange").val();
+  if (exchange) {
+    setUserExchange(exchange);
+  }
+  fetchAccessToken().then(token => {
+    if (token) {
+      connect(token);
+      startTokenRefresh();
+      $("#navLogin").hide();
+      $("#navLogout").text("Logout " + $("#loginUsername").val() + " (" + $("#loginPrefix").val() + ")").show();
+    } else {
+      console.error("Could not fetch AMQP access token.");
     }
-    exchangeModal.hide();
-    fetchAccessToken().then(token => {
-      if (token) {
-        connect(token);
-        startTokenRefresh();
-      } else {
-        console.error("Could not fetch AMQP access token.");
-      }
-    });
+    loginModal.hide();
   });
+});
 
-  $("#navLogout").on("click", () => {
-    keycloak.logout();
-    $("#navLogout").text("Logout").hide();
-    $("#navLogin").show();
-  });
-}
+$("#navLogout").on("click", () => {
+  $("#navLogout").text("Logout").hide();
+  $("#navLogin").show();
+});
