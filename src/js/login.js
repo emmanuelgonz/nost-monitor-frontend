@@ -73,6 +73,44 @@ function startTokenRefresh() {
   }, 3 * 60 * 1000);
 }
 
+function startApplication() {
+  $("#navLogin").hide();
+  $("#navLogout")
+    .text("Logout " + keycloak.tokenParsed.preferred_username)
+    .show();
+
+  // Prompt for exchange name after login
+  if (exchange) {
+    // Set the global variable
+    import("./main").then(mod => {
+      mod.userExchange = exchange;
+      fetchAccessToken().then(token => {
+        if (token) {
+          mod.connect(token);
+          startTokenRefresh();
+        } else {
+          console.error("Could not fetch AMQP access token.");
+        }
+      });
+    });
+  } else {
+    fetchAccessToken().then(token => {
+      if (token) {
+        connect(token);
+        startTokenRefresh();
+      } else {
+        console.error("Could not fetch AMQP access token.");
+      }
+    });
+  }
+
+  $("#navLogout").on("click", () => {
+    keycloak.logout();
+    $("#navLogout").text("Logout").hide();
+    $("#navLogin").show();
+  });
+}
+
 $("#loginForm").on("submit", function (e) {
   e.preventDefault();
   const KEYCLOAK_HOST = $("#loginKeycloakHost").val();
@@ -104,52 +142,3 @@ $("#loginForm").on("submit", function (e) {
       console.error("Failed to initialize Keycloak");
     });
 
-  // Get Keycloak values from form, fallback to env if blank
-  const keycloakClientId = $("#loginKeycloakClientId").val() || process.env.DEFAULT_KEYCLOAK_CLIENT_ID;
-  const keycloakClientSecret = $("#loginKeycloakClientSecret").val() || process.env.DEFAULT_KEYCLOAK_CLIENT_SECRET;
-  function fetchAccessTokenOverride() {
-    return fetch(`https://${KEYCLOAK_HOST}:${KEYCLOAK_PORT}/realms/${KEYCLOAK_REALM}/protocol/openid-connect/token`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/x-www-form-urlencoded'
-      },
-      body: new URLSearchParams({
-        'client_id': keycloakClientId,
-        'client_secret': keycloakClientSecret,
-        'grant_type': 'client_credentials'
-      })
-    })
-      .then(response => {
-        if (response.ok) {
-          return response.json();
-        } else {
-          return response.text().then(text => {
-            console.error("Failed to obtain access token:", text);
-            throw new Error('Failed to obtain access token');
-          });
-        }
-      })
-      .then(data => {
-        return data.access_token;
-      })
-      .catch(error => {
-        console.error(error);
-      });
-  }
-  fetchAccessTokenOverride().then(token => {
-    if (token) {
-      connect(token);
-      startTokenRefresh();
-      $("#navLogin").hide();
-      $("#navLogout").text("Logout " + $("#loginUsername").val() + " (" + $("#loginPrefix").val() + ")").show();
-    } else {
-      console.error("Could not fetch AMQP access token.");
-    }
-    loginModal.hide();
-  });
-});
-
-$("#navLogout").on("click", () => {
-  $("#navLogout").text("Logout").hide();
-  $("#navLogin").show();
-});
