@@ -6,10 +6,14 @@ let amqpConn = null;
 let amqpChannel = null;
 let amqp = null;
 
+// Add this line:
+let userExchange = null;
+
 async function connect(accessToken) {
   const RABBITMQ_HOST = process.env.DEFAULT_RABBITMQ_HOST;
   const RABBITMQ_RELAY_PORT = process.env.DEFAULT_RABBITMQ_RELAY_PORT;
-  const RABBITMQ_EXCHANGE = process.env.DEFAULT_RABBITMQ_EXCHANGE;
+  // Use userExchange if set, otherwise fallback to env
+  const RABBITMQ_EXCHANGE = userExchange || process.env.DEFAULT_RABBITMQ_EXCHANGE;
   const tls = window.location.protocol === "https:";
   const url = `${tls ? "wss" : "ws"}://${RABBITMQ_HOST}:${RABBITMQ_RELAY_PORT}`;
 
@@ -61,4 +65,4 @@ function handleMessage(topic, payload) {
   );
 }
 
-export { amqpConn, amqpChannel, connect, updateAmqpToken };
+export { amqpConn, amqpChannel, connect, updateAmqpToken, userExchange };
