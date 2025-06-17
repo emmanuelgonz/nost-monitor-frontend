@@ -77,18 +77,28 @@ function startApplication() {
     .text("Logout " + keycloak.tokenParsed.preferred_username)
     .show();
 
-  // Prompt for exchange name after login
-  let exchange = prompt("Enter RabbitMQ Exchange name:", process.env.DEFAULT_RABBITMQ_EXCHANGE);
-  if (exchange) {
-    setUserExchange(exchange);
-  }
-  fetchAccessToken().then(token => {
-    if (token) {
-      connect(token);
-      startTokenRefresh();
-    } else {
-      console.error("Could not fetch AMQP access token.");
+  // Set default value in modal input
+  $("#exchangeInput").val(process.env.DEFAULT_RABBITMQ_EXCHANGE);
+
+  // Show the modal
+  const exchangeModal = new bootstrap.Modal(document.getElementById('exchangeModal'));
+  exchangeModal.show();
+
+  // Handle save button click
+  $("#exchangeSaveBtn").off("click").on("click", function () {
+    const exchange = $("#exchangeInput").val();
+    if (exchange) {
+      setUserExchange(exchange);
     }
+    exchangeModal.hide();
+    fetchAccessToken().then(token => {
+      if (token) {
+        connect(token);
+        startTokenRefresh();
+      } else {
+        console.error("Could not fetch AMQP access token.");
+      }
+    });
   });
 
   $("#navLogout").on("click", () => {
