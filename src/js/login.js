@@ -19,6 +19,14 @@ $("#loginHostname").val(process.env.DEFAULT_HOSTNAME);
 $("#loginPort").val(process.env.DEFAULT_PORT);
 $("#loginExchange").val(process.env.DEFAULT_RABBITMQ_EXCHANGE);
 
+// Set Keycloak fields
+$("#loginKeycloakHost").val(process.env.DEFAULT_KEYCLOAK_HOST);
+$("#loginKeycloakPort").val(process.env.DEFAULT_KEYCLOAK_PORT);
+$("#loginKeycloakRealm").val(process.env.DEFAULT_KEYCLOAK_REALM);
+$("#loginKeycloakWebLoginClientId").val(process.env.DEFAULT_KEYCLOAK_WEB_LOGIN_CLIENT_ID);
+$("#loginKeycloakClientId").val(process.env.DEFAULT_KEYCLOAK_CLIENT_ID);
+$("#loginKeycloakClientSecret").val(process.env.DEFAULT_KEYCLOAK_CLIENT_SECRET);
+
 const loginModal = new bootstrap.Modal(document.getElementById("loginModal"));
 loginModal.show();
 
