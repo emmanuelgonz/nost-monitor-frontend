@@ -106,18 +106,6 @@
                 </div>
               </div>
             </div>
-            <!-- Keycloak fields -->
-            <div class="row mb-3">
-              <div class="col-4">
-                <label for="loginKeycloakRealm" class="form-label">Keycloak Realm</label>
-                <input
-                  type="text"
-                  class="form-control"
-                  id="loginKeycloakRealm"
-                  required
-                />
-              </div>
-            </div>
             <div class="row mb-3">
               {{!-- <div class="col-4">
                 <label for="loginKeycloakWebLoginClientId" class="form-label">Keycloak Web Login Client ID</label>
@@ -128,6 +116,15 @@
                   required
                 />
               </div> --}}
+              <div class="col-4">
+                <label for="loginKeycloakRealm" class="form-label">Keycloak Realm</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  id="loginKeycloakRealm"
+                  required
+                />
+              </div>
               <div class="col-4">
                 <label for="loginKeycloakClientId" class="form-label">Keycloak Client ID</label>
                 <input
