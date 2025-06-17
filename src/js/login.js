@@ -91,7 +91,7 @@ function startApplication() {
       setUserExchange(exchange);
     }
     // Move focus before hiding modal to avoid accessibility warning
-    $("#navLogout").focus(); // or any visible, enabled element outside the modal
+    document.body.focus(); // Move focus to body before hiding modal
     exchangeModal.hide();
     fetchAccessToken().then(token => {
       if (token) {
