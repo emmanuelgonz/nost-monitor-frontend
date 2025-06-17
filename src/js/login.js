@@ -3,31 +3,12 @@ import $ from "jquery";
 import Keycloak from "keycloak-js";
 import { connect, updateAmqpToken, setUserExchange } from "./main";
 
-// // Keycloak configuration for user authentication
-// const KEYCLOAK_HOST = process.env.DEFAULT_KEYCLOAK_HOST;
-// const KEYCLOAK_PORT = process.env.DEFAULT_KEYCLOAK_PORT;
-// const KEYCLOAK_REALM = process.env.DEFAULT_KEYCLOAK_REALM;
-// const KEYCLOAK_WEB_LOGIN_CLIENT_ID = process.env.DEFAULT_KEYCLOAK_WEB_LOGIN_CLIENT_ID;
-// const KEYCLOAK_CLIENT_ID = process.env.DEFAULT_KEYCLOAK_CLIENT_ID;
-// const KEYCLOAK_CLIENT_SECRET = process.env.DEFAULT_KEYCLOAK_CLIENT_SECRET;
-
-// // Load environment variables into login modal fields
-// $("#loginPrefix").val(process.env.DEFAULT_PREFIX);
-// $("#loginUsername").val(process.env.DEFAULT_USERNAME);
-// $("#loginPassword").val(process.env.DEFAULT_PASSWORD);
-// $("#loginHostname").val(process.env.DEFAULT_HOSTNAME);
-// $("#loginPort").val(process.env.DEFAULT_PORT);
-$("#loginExchange").val(process.env.DEFAULT_RABBITMQ_EXCHANGE);
-
 // Set Keycloak fields (do NOT pre-fill Client ID and Secret)
 $("#loginKeycloakHost").val(process.env.DEFAULT_KEYCLOAK_HOST);
 $("#loginKeycloakPort").val(process.env.DEFAULT_KEYCLOAK_PORT);
 $("#loginKeycloakRealm").val(process.env.DEFAULT_KEYCLOAK_REALM);
 $("#loginKeycloakWebLoginClientId").val(process.env.DEFAULT_KEYCLOAK_WEB_LOGIN_CLIENT_ID);
-
-// Do not pre-fill these:
-// $("#loginKeycloakClientId").val(process.env.DEFAULT_KEYCLOAK_CLIENT_ID);
-// $("#loginKeycloakClientSecret").val(process.env.DEFAULT_KEYCLOAK_CLIENT_SECRET);
+$("#loginExchange").val(process.env.DEFAULT_RABBITMQ_EXCHANGE);
 
 const loginModal = new bootstrap.Modal(document.getElementById("loginModal"));
 loginModal.show();
@@ -129,7 +110,7 @@ $("#loginForm").on("submit", function (e) {
     KEYCLOAK_WEB_LOGIN_CLIENT_ID,
     exchange,
   });
-  
+
   const keycloak = new Keycloak({
     url: `https://${KEYCLOAK_HOST}:${KEYCLOAK_PORT}/`,
     realm: KEYCLOAK_REALM,
