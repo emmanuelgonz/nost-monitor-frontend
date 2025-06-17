@@ -15,33 +15,6 @@
         <form id="loginForm">
           <div class="container">
             <div class="row mb-3">
-              {{!-- <div class="col-4">
-                <label for="loginPrefix" class="form-label">Prefix</label>
-                <input
-                  type="text"
-                  class="form-control"
-                  id="loginPrefix"
-                  required
-                />
-              </div>
-              <div class="col-4">
-                <label for="loginUsername" class="form-label">Username</label>
-                <input
-                  type="text"
-                  class="form-control"
-                  id="loginUsername"
-                  required
-                />
-              </div>
-              <div class="col-4">
-                <label for="loginPassword" class="form-label">Password</label>
-                <input
-                  type="password"
-                  class="form-control"
-                  id="loginPassword"
-                  required
-                />
-              </div> --}}
               <div class="col-4">
                 <label for="loginExchange" class="form-label">Exchange</label>
                 <input
@@ -51,7 +24,7 @@
                   required
                 />
               </div>
-                            <div class="col-4">
+              <div class="col-4">
                 <label for="loginKeycloakHost" class="form-label">Keycloak Hostname</label>
                 <input
                   type="text"
@@ -71,51 +44,6 @@
               </div>
             </div>
             <div class="row mb-3">
-              {{!-- <div class="col-auto">
-                <label for="loginHostname" class="form-label">Hostname</label>
-                <input
-                  type="text"
-                  class="form-control"
-                  id="loginHostname"
-                  required
-                />
-              </div>
-              <div class="col-auto">
-                <label for="loginPort" class="form-label">Port</label>
-                <input
-                  type="number"
-                  step="1"
-                  class="form-control"
-                  id="loginPort"
-                  required
-                />
-              </div> --}}
-              <div class="col-auto">
-                <label class="form-label">Options</label>
-                <div class="form-check">
-                  <input
-                    type="checkbox"
-                    class="form-check-input"
-                    id="loginEncrypted"
-                    value=""
-                    checked
-                  />
-                  <label for="loginEncrypted" class="form-check-label"
-                    >Encrypted (TLS/SSL)</label
-                  >
-                </div>
-              </div>
-            </div>
-            <div class="row mb-3">
-              {{!-- <div class="col-4">
-                <label for="loginKeycloakWebLoginClientId" class="form-label">Keycloak Web Login Client ID</label>
-                <input
-                  type="text"
-                  class="form-control"
-                  id="loginKeycloakWebLoginClientId"
-                  required
-                />
-              </div> --}}
               <div class="col-4">
                 <label for="loginKeycloakRealm" class="form-label">Keycloak Realm</label>
                 <input
@@ -142,6 +70,23 @@
                   id="loginKeycloakClientSecret"
                   required
                 />
+              </div>
+            </div>
+            <div class="row mb-3">
+              <div class="col-auto">
+                <label class="form-label">Options</label>
+                <div class="form-check">
+                  <input
+                    type="checkbox"
+                    class="form-check-input"
+                    id="loginEncrypted"
+                    value=""
+                    checked
+                  />
+                  <label for="loginEncrypted" class="form-check-label"
+                    >Encrypted (TLS/SSL)</label
+                  >
+                </div>
               </div>
             </div>
             <div class="row justify-content-end">
