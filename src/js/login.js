@@ -32,36 +32,6 @@ $("#loginKeycloakWebLoginClientId").val(process.env.DEFAULT_KEYCLOAK_WEB_LOGIN_C
 const loginModal = new bootstrap.Modal(document.getElementById("loginModal"));
 loginModal.show();
 
-$("#loginForm").on("submit", (e) => {
-  e.preventDefault();
-
-  const KEYCLOAK_HOST = $("#loginKeycloakHost").val();
-  const KEYCLOAK_PORT = $("#loginKeycloakPort").val();
-  const KEYCLOAK_REALM = $("#loginKeycloakRealm").val();
-  const KEYCLOAK_WEB_LOGIN_CLIENT_ID = $("#loginKeycloakWebLoginClientId").val();
-
-  const keycloak = new Keycloak({
-    url: `https://${KEYCLOAK_HOST}:${KEYCLOAK_PORT}/`,
-    realm: KEYCLOAK_REALM,
-    clientId: KEYCLOAK_WEB_LOGIN_CLIENT_ID,
-  });
-
-  keycloak
-    .init({ onLoad: "login-required" })
-    .then(function (authenticated) {
-      if (authenticated) {
-        startApplication();
-      } else {
-        console.error("User not authenticated");
-      }
-    })
-    .catch(function () {
-      console.error("Failed to initialize Keycloak");
-    });
-
-});
-
-
 function fetchAccessToken() {
   return fetch(`https://${KEYCLOAK_HOST}:${KEYCLOAK_PORT}/realms/${KEYCLOAK_REALM}/protocol/openid-connect/token`, {
     method: 'POST',
@@ -105,10 +75,35 @@ function startTokenRefresh() {
 
 $("#loginForm").on("submit", function (e) {
   e.preventDefault();
+  const KEYCLOAK_HOST = $("#loginKeycloakHost").val();
+  const KEYCLOAK_PORT = $("#loginKeycloakPort").val();
+  const KEYCLOAK_REALM = $("#loginKeycloakRealm").val();
+  const KEYCLOAK_WEB_LOGIN_CLIENT_ID = $("#loginKeycloakWebLoginClientId").val();
   const exchange = $("#loginExchange").val();
+  
   if (exchange) {
     setUserExchange(exchange);
   }
+
+  const keycloak = new Keycloak({
+    url: `https://${KEYCLOAK_HOST}:${KEYCLOAK_PORT}/`,
+    realm: KEYCLOAK_REALM,
+    clientId: KEYCLOAK_WEB_LOGIN_CLIENT_ID,
+  });
+
+  keycloak
+    .init({ onLoad: "login-required" })
+    .then(function (authenticated) {
+      if (authenticated) {
+        startApplication();
+      } else {
+        console.error("User not authenticated");
+      }
+    })
+    .catch(function () {
+      console.error("Failed to initialize Keycloak");
+    });
+
   // Get Keycloak values from form, fallback to env if blank
   const keycloakClientId = $("#loginKeycloakClientId").val() || process.env.DEFAULT_KEYCLOAK_CLIENT_ID;
   const keycloakClientSecret = $("#loginKeycloakClientSecret").val() || process.env.DEFAULT_KEYCLOAK_CLIENT_SECRET;
