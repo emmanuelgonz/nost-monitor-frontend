@@ -122,7 +122,14 @@ $("#loginForm").on("submit", function (e) {
   if (exchange) {
     setUserExchange(exchange);
   }
-
+  console.log({
+    KEYCLOAK_HOST,
+    KEYCLOAK_PORT,
+    KEYCLOAK_REALM,
+    KEYCLOAK_WEB_LOGIN_CLIENT_ID,
+    exchange,
+  });
+  
   const keycloak = new Keycloak({
     url: `https://${KEYCLOAK_HOST}:${KEYCLOAK_PORT}/`,
     realm: KEYCLOAK_REALM,
