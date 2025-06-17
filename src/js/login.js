@@ -90,6 +90,8 @@ function startApplication() {
     if (exchange) {
       setUserExchange(exchange);
     }
+    // Move focus before hiding modal to avoid accessibility warning
+    $("#navLogout").focus(); // or any visible, enabled element outside the modal
     exchangeModal.hide();
     fetchAccessToken().then(token => {
       if (token) {
