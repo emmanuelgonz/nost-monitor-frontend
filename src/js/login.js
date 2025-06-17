@@ -17,7 +17,7 @@ import { connect, updateAmqpToken, setUserExchange } from "./main";
 // $("#loginPassword").val(process.env.DEFAULT_PASSWORD);
 // $("#loginHostname").val(process.env.DEFAULT_HOSTNAME);
 // $("#loginPort").val(process.env.DEFAULT_PORT);
-// $("#loginExchange").val(process.env.DEFAULT_RABBITMQ_EXCHANGE);
+$("#loginExchange").val(process.env.DEFAULT_RABBITMQ_EXCHANGE);
 
 // Set Keycloak fields (do NOT pre-fill Client ID and Secret)
 $("#loginKeycloakHost").val(process.env.DEFAULT_KEYCLOAK_HOST);
