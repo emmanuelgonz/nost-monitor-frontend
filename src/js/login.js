@@ -49,7 +49,8 @@ function startApplication() {
   $("#navLogout")
     .text("Logout " + keycloak.tokenParsed.preferred_username)
     .show();
-
+  loginModal.hide();
+  
   // Prompt for exchange name after login
   if (exchange) {
     // Set the global variable
