@@ -3,16 +3,6 @@ import $ from "jquery";
 import Keycloak from "keycloak-js";
 import { connect, updateAmqpToken, setUserExchange } from "./main";
 
-// Set Keycloak fields (do NOT pre-fill Client ID and Secret)
-$("#loginKeycloakHost").val(process.env.DEFAULT_KEYCLOAK_HOST);
-$("#loginKeycloakPort").val(process.env.DEFAULT_KEYCLOAK_PORT);
-$("#loginKeycloakRealm").val(process.env.DEFAULT_KEYCLOAK_REALM);
-$("#loginKeycloakWebLoginClientId").val(process.env.DEFAULT_KEYCLOAK_WEB_LOGIN_CLIENT_ID);
-$("#loginExchange").val(process.env.DEFAULT_RABBITMQ_EXCHANGE);
-
-const loginModal = new bootstrap.Modal(document.getElementById("loginModal"));
-loginModal.show();
-
 function fetchAccessToken() {
   return fetch(`https://${KEYCLOAK_HOST}:${KEYCLOAK_PORT}/realms/${KEYCLOAK_REALM}/protocol/openid-connect/token`, {
     method: 'POST',
@@ -92,6 +82,16 @@ function startApplication() {
   });
 }
 
+// Set Keycloak fields (do NOT pre-fill Client ID and Secret)
+$("#loginKeycloakHost").val(process.env.DEFAULT_KEYCLOAK_HOST);
+$("#loginKeycloakPort").val(process.env.DEFAULT_KEYCLOAK_PORT);
+$("#loginKeycloakRealm").val(process.env.DEFAULT_KEYCLOAK_REALM);
+$("#loginKeycloakWebLoginClientId").val(process.env.DEFAULT_KEYCLOAK_WEB_LOGIN_CLIENT_ID);
+$("#loginExchange").val(process.env.DEFAULT_RABBITMQ_EXCHANGE);
+
+const loginModal = new bootstrap.Modal(document.getElementById("loginModal"));
+loginModal.show();
+
 $("#loginForm").on("submit", function (e) {
   e.preventDefault();
   const KEYCLOAK_HOST = $("#loginKeycloakHost").val();
@@ -100,9 +100,9 @@ $("#loginForm").on("submit", function (e) {
   const KEYCLOAK_WEB_LOGIN_CLIENT_ID = $("#loginKeycloakWebLoginClientId").val();
   const exchange = $("#loginExchange").val();
   
-  // if (exchange) {
-  //   setUserExchange(exchange);
-  // }
+  if (exchange) {
+    setUserExchange(exchange);
+  }
   
   console.log({
     KEYCLOAK_HOST,
