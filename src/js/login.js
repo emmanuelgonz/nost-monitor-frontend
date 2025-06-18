@@ -46,7 +46,6 @@ function startTokenRefresh() {
 
 function startApplication() {
   $("#navLogin").hide();
-  loginModal.hide();
   $("#navLogout")
     .text("Logout " + keycloak.tokenParsed.preferred_username)
     .show();
@@ -97,6 +96,7 @@ loginModal.show();
 
 $("#loginForm").on("submit", function (e) {
   e.preventDefault();
+  loginModal.hide();
   const KEYCLOAK_HOST = $("#loginKeycloakHost").val();
   const KEYCLOAK_PORT = parseInt($("#loginKeycloakPort").val());
   const KEYCLOAK_REALM = $("#loginKeycloakRealm").val();
