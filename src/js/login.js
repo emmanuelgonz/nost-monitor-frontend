@@ -46,6 +46,7 @@ function startTokenRefresh() {
 
 function startApplication() {
   $("#navLogin").hide();
+  loginModal.hide();
   $("#navLogout")
     .text("Logout " + keycloak.tokenParsed.preferred_username)
     .show();
@@ -122,7 +123,6 @@ $("#loginForm").on("submit", function (e) {
     .init({ onLoad: "login-required" })
     .then(function (authenticated) {
       if (authenticated) {
-        loginModal.hide()
         startApplication();
       } else {
         console.error("User not authenticated");
