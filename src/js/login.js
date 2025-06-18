@@ -98,7 +98,8 @@ loginModal.show();
 $("#loginForm").on("submit", function (e) {
   e.preventDefault();
   const KEYCLOAK_HOST = $("#loginKeycloakHost").val();
-  const KEYCLOAK_PORT = parseInt($("#loginKeycloakPort").val());
+  // const KEYCLOAK_PORT = parseInt($("#loginKeycloakPort").val());
+  const KEYCLOAK_PORT = $("#loginKeycloakPort").val();
   const KEYCLOAK_REALM = $("#loginKeycloakRealm").val();
   const KEYCLOAK_WEB_LOGIN_CLIENT_ID = $("#loginKeycloakWebLoginClientId").val();
   const exchange = $("#loginExchange").val();
