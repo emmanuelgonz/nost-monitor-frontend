@@ -50,7 +50,7 @@ function startApplication() {
     .text("Logout " + keycloak.tokenParsed.preferred_username)
     .show();
   loginModal.hide();
-  
+
   // Prompt for exchange name after login
   if (exchange) {
     // Set the global variable
@@ -97,7 +97,6 @@ loginModal.show();
 
 $("#loginForm").on("submit", function (e) {
   e.preventDefault();
-  loginModal.hide();
   const KEYCLOAK_HOST = $("#loginKeycloakHost").val();
   const KEYCLOAK_PORT = parseInt($("#loginKeycloakPort").val());
   const KEYCLOAK_REALM = $("#loginKeycloakRealm").val();
