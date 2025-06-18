@@ -89,8 +89,7 @@ $("#loginKeycloakPort").val(process.env.DEFAULT_KEYCLOAK_PORT);
 $("#loginKeycloakRealm").val(process.env.DEFAULT_KEYCLOAK_REALM);
 $("#loginKeycloakWebLoginClientId").val(process.env.DEFAULT_KEYCLOAK_WEB_LOGIN_CLIENT_ID);
 $("#loginExchange").val(process.env.DEFAULT_RABBITMQ_EXCHANGE);
-const KEYCLOAK_CLIENT_ID = process.env.DEFAULT_KEYCLOAK_CLIENT_ID;
-const KEYCLOAK_CLIENT_SECRET = process.env.DEFAULT_KEYCLOAK_CLIENT_SECRET;
+
 
 const loginModal = new bootstrap.Modal(document.getElementById("loginModal"));
 loginModal.show();
@@ -102,6 +101,8 @@ $("#loginForm").on("submit", function (e) {
   const KEYCLOAK_REALM = $("#loginKeycloakRealm").val();
   const KEYCLOAK_WEB_LOGIN_CLIENT_ID = $("#loginKeycloakWebLoginClientId").val();
   const exchange = $("#loginExchange").val();
+  const KEYCLOAK_CLIENT_ID = process.env.DEFAULT_KEYCLOAK_CLIENT_ID;
+  const KEYCLOAK_CLIENT_SECRET = process.env.DEFAULT_KEYCLOAK_CLIENT_SECRET;
   
   if (exchange) {
     setUserExchange(exchange);
