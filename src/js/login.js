@@ -58,7 +58,7 @@ function startApplication() {
       console.error("Could not fetch AMQP access token.");
     }
   });
-
+  loginModal.hide();
   $("#navLogout").on("click", () => {
     keycloak.logout();
     $("#navLogout").text("Logout").hide();
@@ -87,7 +87,7 @@ loginModal.show();
 // const KEYCLOAK_CLIENT_SECRET = process.env.DEFAULT_KEYCLOAK_CLIENT_SECRET;
 
 $("#loginForm").on("submit", (e) => {
-  // e.preventDefault();
+  e.preventDefault();
   const KEYCLOAK_HOST = $("#loginKeycloakHost").val();
   const KEYCLOAK_PORT = $("#loginKeycloakPort").val();
   const KEYCLOAK_REALM = $("#loginKeycloakRealm").val();
@@ -95,7 +95,6 @@ $("#loginForm").on("submit", (e) => {
   const KEYCLOAK_CLIENT_ID = $("#loginUsername").val() || process.env.DEFAULT_KEYCLOAK_CLIENT_ID;
   const KEYCLOAK_CLIENT_SECRET = $("#loginUsername").val() || process.env.DEFAULT_KEYCLOAK_CLIENT_SECRET;
   console.log(KEYCLOAK_CLIENT_ID)
-
 
   const keycloak = new Keycloak({
     url: `https://${KEYCLOAK_HOST}:${KEYCLOAK_PORT}/`,
@@ -107,7 +106,6 @@ $("#loginForm").on("submit", (e) => {
     .init({ onLoad: "login-required" })
     .then(function (authenticated) {
       if (authenticated) {
-        loginModal.hide();
         startApplication();
       } else {
         console.error("User not authenticated");
