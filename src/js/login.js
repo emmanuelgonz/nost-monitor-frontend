@@ -99,6 +99,8 @@ $(document).ready(function () {
 
   $('#loginForm').on('submit', function (e) {
     e.preventDefault();
+    const $connectBtn = $('#loginConnect');
+    $connectBtn.prop('disabled', true); // Disable button to prevent double click
     // Get values from modal fields
     const exchange = $('#loginExchange').val();
     const host = $('#loginKeycloakHost').val();
@@ -140,10 +142,11 @@ $(document).ready(function () {
           startApplication(loginModal); // Pass modal to startApplication
         } else {
           console.error("User not authenticated.");
+          $connectBtn.prop('disabled', false); // Re-enable on failure
         }
       })
       .catch(function () {
-        console.error("Failed to initialize Keycloak.");
+        $connectBtn.prop('disabled', false); // Re-enable on error
       });
   });
 });
