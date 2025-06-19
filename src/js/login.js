@@ -80,6 +80,7 @@ const DEFAULT_KEYCLOAK_CLIENT_SECRET = process.env.DEFAULT_KEYCLOAK_CLIENT_SECRE
 // Show login modal on page load
 $(document).ready(function () {
   // Set default values in modal fields
+  $('#loginExchange').val(DEFAULT_RABBITMQ_EXCHANGE);
   $('#loginKeycloakHost').val(DEFAULT_KEYCLOAK_HOST);
   $('#loginKeycloakPort').val(DEFAULT_KEYCLOAK_PORT);
   $('#loginKeycloakRealm').val(DEFAULT_KEYCLOAK_REALM);
