@@ -87,7 +87,7 @@ loginModal.show();
 // const KEYCLOAK_CLIENT_SECRET = process.env.DEFAULT_KEYCLOAK_CLIENT_SECRET;
 
 $("#loginForm").on("submit", (e) => {
-  e.preventDefault();
+  // e.preventDefault();
   const KEYCLOAK_HOST = $("#loginKeycloakHost").val();
   const KEYCLOAK_PORT = $("#loginKeycloakPort").val();
   const KEYCLOAK_REALM = $("#loginKeycloakRealm").val();
