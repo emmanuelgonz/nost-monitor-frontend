@@ -69,8 +69,24 @@ function startApplication() {
   });
 }
 
+// Set default values from environment variables
+const DEFAULT_KEYCLOAK_HOST = process.env.DEFAULT_KEYCLOAK_HOST || '';
+const DEFAULT_KEYCLOAK_PORT = process.env.DEFAULT_KEYCLOAK_PORT || '';
+const DEFAULT_KEYCLOAK_REALM = process.env.DEFAULT_KEYCLOAK_REALM || '';
+const DEFAULT_KEYCLOAK_WEB_LOGIN_CLIENT_ID = process.env.DEFAULT_KEYCLOAK_WEB_LOGIN_CLIENT_ID || '';
+const DEFAULT_KEYCLOAK_CLIENT_ID = process.env.DEFAULT_KEYCLOAK_CLIENT_ID || '';
+const DEFAULT_KEYCLOAK_CLIENT_SECRET = process.env.DEFAULT_KEYCLOAK_CLIENT_SECRET || '';
+
 // Show login modal on page load
 $(document).ready(function () {
+  // Set default values in modal fields
+  $('#loginKeycloakHost').val(DEFAULT_KEYCLOAK_HOST);
+  $('#loginKeycloakPort').val(DEFAULT_KEYCLOAK_PORT);
+  $('#loginKeycloakRealm').val(DEFAULT_KEYCLOAK_REALM);
+  $('#loginKeycloakWebLoginClientId').val(DEFAULT_KEYCLOAK_WEB_LOGIN_CLIENT_ID);
+  $('#loginKeycloakClientId').val() || DEFAULT_KEYCLOAK_CLIENT_ID;
+  $('#loginKeycloakClientSecret').val() || DEFAULT_KEYCLOAK_CLIENT_SECRET;
+
   const loginModal = new bootstrap.Modal(document.getElementById('loginModal'));
   loginModal.show();
 
