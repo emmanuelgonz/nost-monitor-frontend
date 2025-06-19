@@ -66,33 +66,56 @@ function startApplication() {
   });
 }
 
-// Keycloak configuration for user authentication
-const KEYCLOAK_HOST = process.env.DEFAULT_KEYCLOAK_HOST;
-const KEYCLOAK_PORT = process.env.DEFAULT_KEYCLOAK_PORT;
-const KEYCLOAK_REALM = process.env.DEFAULT_KEYCLOAK_REALM;
-const KEYCLOAK_WEB_LOGIN_CLIENT_ID = process.env.DEFAULT_KEYCLOAK_WEB_LOGIN_CLIENT_ID;
-const KEYCLOAK_CLIENT_ID = process.env.DEFAULT_KEYCLOAK_CLIENT_ID;
-const KEYCLOAK_CLIENT_SECRET = process.env.DEFAULT_KEYCLOAK_CLIENT_SECRET;
+// Set Keycloak fields (do NOT pre-fill Client ID and Secret)
+$("#loginKeycloakHost").val(process.env.DEFAULT_KEYCLOAK_HOST);
+$("#loginKeycloakPort").val(process.env.DEFAULT_KEYCLOAK_PORT);
+$("#loginKeycloakRealm").val(process.env.DEFAULT_KEYCLOAK_REALM);
+$("#loginKeycloakWebLoginClientId").val(process.env.DEFAULT_KEYCLOAK_WEB_LOGIN_CLIENT_ID);
+$("#loginExchange").val(process.env.DEFAULT_RABBITMQ_EXCHANGE);
+// const KEYCLOAK_CLIENT_ID = process.env.DEFAULT_KEYCLOAK_CLIENT_ID;
+// const KEYCLOAK_CLIENT_SECRET = process.env.DEFAULT_KEYCLOAK_CLIENT_SECRET;
 
-const keycloak = new Keycloak({
-  url: `https://${KEYCLOAK_HOST}:${KEYCLOAK_PORT}/`,
-  realm: KEYCLOAK_REALM,
-  clientId: KEYCLOAK_WEB_LOGIN_CLIENT_ID,
-});
+const loginModal = new bootstrap.Modal(document.getElementById("loginModal"));
+loginModal.show();
 
-keycloak
-  .init({ onLoad: "login-required" })
-  .then(function (authenticated) {
-    if (authenticated) {
-      startApplication();
-    } else {
-      console.error("User not authenticated");
-    }
-  })
-  .catch(function () {
-    console.error("Failed to initialize Keycloak");
+// // Keycloak configuration for user authentication
+// const KEYCLOAK_HOST = process.env.DEFAULT_KEYCLOAK_HOST;
+// const KEYCLOAK_PORT = process.env.DEFAULT_KEYCLOAK_PORT;
+// const KEYCLOAK_REALM = process.env.DEFAULT_KEYCLOAK_REALM;
+// const KEYCLOAK_WEB_LOGIN_CLIENT_ID = process.env.DEFAULT_KEYCLOAK_WEB_LOGIN_CLIENT_ID;
+// const KEYCLOAK_CLIENT_ID = process.env.DEFAULT_KEYCLOAK_CLIENT_ID;
+// const KEYCLOAK_CLIENT_SECRET = process.env.DEFAULT_KEYCLOAK_CLIENT_SECRET;
+
+$("#loginForm").on("submit", (e) => {
+  e.preventDefault();
+  const KEYCLOAK_HOST = $("#loginKeycloakHost").val();
+  const KEYCLOAK_PORT = $("#loginKeycloakPort").val();
+  const KEYCLOAK_REALM = $("#loginKeycloakRealm").val();
+  const KEYCLOAK_WEB_LOGIN_CLIENT_ID = $("#loginKeycloakWebLoginClientId").val();
+  const KEYCLOAK_CLIENT_ID = $("#loginUsername").val() || process.env.DEFAULT_KEYCLOAK_CLIENT_ID;
+  const KEYCLOAK_CLIENT_SECRET = $("#loginUsername").val() || process.env.DEFAULT_KEYCLOAK_CLIENT_SECRET; 
+
+
+  const keycloak = new Keycloak({
+    url: `https://${KEYCLOAK_HOST}:${KEYCLOAK_PORT}/`,
+    realm: KEYCLOAK_REALM,
+    clientId: KEYCLOAK_WEB_LOGIN_CLIENT_ID,
   });
 
+  keycloak
+    .init({ onLoad: "login-required" })
+    .then(function (authenticated) {
+      if (authenticated) {
+        loginModal.hide();
+        startApplication();
+      } else {
+        console.error("User not authenticated");
+      }
+    })
+    .catch(function () {
+      console.error("Failed to initialize Keycloak");
+    });
+});
 
 // // Set Keycloak fields (do NOT pre-fill Client ID and Secret)
 // $("#loginKeycloakHost").val(process.env.DEFAULT_KEYCLOAK_HOST);
