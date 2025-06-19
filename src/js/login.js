@@ -57,7 +57,8 @@ function startApplication(loginModal) {
     if (token) {
       try {
         await connect(token); // Wait for broker connection
-        if (loginModal) loginModal.hide(); // Hide modal only after successful connection
+        // if (loginModal) loginModal.hide(); // Hide modal only after successful connection
+        loginModal.hide(); // Hide modal only after successful connection
         startTokenRefresh();
       } catch (err) {
         console.error("Could not connect to broker:", err);
