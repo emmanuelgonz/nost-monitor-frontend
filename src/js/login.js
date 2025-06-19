@@ -58,7 +58,7 @@ function startApplication() {
       console.error("Could not fetch AMQP access token.");
     }
   });
-  loginModal.hide();
+
   $("#navLogout").on("click", () => {
     keycloak.logout();
     $("#navLogout").text("Logout").hide();
@@ -106,6 +106,7 @@ $("#loginForm").on("submit", (e) => {
     .init({ onLoad: "login-required" })
     .then(function (authenticated) {
       if (authenticated) {
+        $("#loginModal").modal('hide');
         startApplication();
       } else {
         console.error("User not authenticated");
