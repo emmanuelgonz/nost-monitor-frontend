@@ -37,11 +37,11 @@ function startTokenRefresh() {
   setInterval(() => {
     fetchAccessToken().then(newToken => {
       if (newToken) {
-        updateAmqpToken(newToken);
+        updateAmqpToken(newToken); // Call update in main.js
         console.log("Access token refreshed.");
       }
     });
-  }, 3 * 60 * 1000);
+  }, 3 * 60 * 1000); // Refresh every 3 minutes
 }
 
 function startApplication() {
@@ -50,30 +50,14 @@ function startApplication() {
     .text("Logout " + keycloak.tokenParsed.preferred_username)
     .show();
 
-  // Prompt for exchange name after login
-  if (exchange) {
-    // Set the global variable
-    import("./main").then(mod => {
-      mod.userExchange = exchange;
-      fetchAccessToken().then(token => {
-        if (token) {
-          mod.connect(token);
-          startTokenRefresh();
-        } else {
-          console.error("Could not fetch AMQP access token.");
-        }
-      });
-    });
-  } else {
-    fetchAccessToken().then(token => {
-      if (token) {
-        connect(token);
-        startTokenRefresh();
-      } else {
-        console.error("Could not fetch AMQP access token.");
-      }
-    });
-  }
+  fetchAccessToken().then(token => {
+    if (token) {
+      connect(token);
+      startTokenRefresh();
+    } else {
+      console.error("Could not fetch AMQP access token.");
+    }
+  });
 
   $("#navLogout").on("click", () => {
     keycloak.logout();
