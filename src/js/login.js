@@ -68,8 +68,6 @@ function startApplication(loginModal) {
 
   $("#navLogout").on("click", () => {
     keycloak.logout();
-    // Clear stored configuration on logout
-    localStorage.removeItem('keycloakConfig');
     $("#navLogout").text("Logout").hide();
     $("#navLogin").show();
   });
@@ -84,7 +82,7 @@ const DEFAULT_KEYCLOAK_WEB_LOGIN_CLIENT_ID = process.env.DEFAULT_KEYCLOAK_WEB_LO
 const DEFAULT_KEYCLOAK_CLIENT_ID = process.env.DEFAULT_KEYCLOAK_CLIENT_ID || '';
 const DEFAULT_KEYCLOAK_CLIENT_SECRET = process.env.DEFAULT_KEYCLOAK_CLIENT_SECRET || '';
 
-// Check authentication state on page load
+// Show login modal on page load
 $(document).ready(function () {
   // Set default values in modal fields
   $('#loginExchange').val(DEFAULT_RABBITMQ_EXCHANGE);
@@ -96,51 +94,7 @@ $(document).ready(function () {
   $('#loginKeycloakClientSecret').val();
   
   const loginModal = new bootstrap.Modal(document.getElementById('loginModal'));
-  
-  // Check if we have stored authentication data and try to restore session
-  const storedConfig = localStorage.getItem('keycloakConfig');
-  if (storedConfig) {
-    try {
-      keycloakConfig = JSON.parse(storedConfig);
-      
-      // Set user exchange if needed
-      if (setUserExchange && keycloakConfig.exchange) {
-        setUserExchange(keycloakConfig.exchange);
-      }
-      
-      // Use https if encrypted, http otherwise
-      const protocol = keycloakConfig.encrypted ? 'https' : 'http';
-      
-      keycloak = new Keycloak({
-        url: `${protocol}://${keycloakConfig.host}:${keycloakConfig.port}/`,
-        realm: keycloakConfig.realm,
-        clientId: keycloakConfig.webLoginClientId,
-      });
-      
-      // Try to restore session without forcing login
-      keycloak
-        .init({ onLoad: "check-sso", silentCheckSsoRedirectUri: window.location.origin + "/silent-check-sso.html" })
-        .then(function (authenticated) {
-          if (authenticated) {
-            console.log("User session restored.");
-            startApplication(loginModal);
-          } else {
-            console.log("No existing session found, showing login modal.");
-            loginModal.show();
-          }
-        })
-        .catch(function (error) {
-          console.log("Error checking SSO session, showing login modal.", error);
-          loginModal.show();
-        });
-    } catch (error) {
-      console.log("Error parsing stored config, showing login modal.", error);
-      loginModal.show();
-    }
-  } else {
-    // No stored config, show login modal
-    loginModal.show();
-  }
+  loginModal.show();
 
   $('#loginForm').on('submit', function (e) {
     e.preventDefault();
@@ -185,18 +139,13 @@ $(document).ready(function () {
       .then(function (authenticated) {
         if (authenticated) {
           console.log("User authenticated.");
-          // Store configuration in localStorage for session restoration
-          localStorage.setItem('keycloakConfig', JSON.stringify(keycloakConfig));
           startApplication(loginModal); // Pass modal to startApplication
         } else {
           console.error("User not authenticated.");
-          loginModal.show(); // Show modal again on failure
           $connectBtn.prop('disabled', false); // Re-enable on failure
         }
       })
-      .catch(function (error) {
-        console.error("Authentication error:", error);
-        loginModal.show(); // Show modal again on error
+      .catch(function () {
         $connectBtn.prop('disabled', false); // Re-enable on error
       });
   });
