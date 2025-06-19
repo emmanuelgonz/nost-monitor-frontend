@@ -135,7 +135,7 @@ $(document).ready(function () {
     });
 
     keycloak
-      .init({ onLoad: "check-sso" })
+      .init({ onLoad: "login-required" })
       .then(function (authenticated) {
         if (authenticated) {
           console.log("User authenticated.");
