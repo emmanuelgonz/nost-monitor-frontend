@@ -94,7 +94,7 @@ $("#loginForm").on("submit", (e) => {
   const KEYCLOAK_WEB_LOGIN_CLIENT_ID = $("#loginKeycloakWebLoginClientId").val();
   const KEYCLOAK_CLIENT_ID = $("#loginUsername").val() || process.env.DEFAULT_KEYCLOAK_CLIENT_ID;
   const KEYCLOAK_CLIENT_SECRET = $("#loginUsername").val() || process.env.DEFAULT_KEYCLOAK_CLIENT_SECRET;
-  console.log(KEYCLOAK_CLIENT_ID)
+  console.log(KEYCLOAK_CLIENT_ID);
 
   const keycloak = new Keycloak({
     url: `https://${KEYCLOAK_HOST}:${KEYCLOAK_PORT}/`,
@@ -106,7 +106,7 @@ $("#loginForm").on("submit", (e) => {
     .init({ onLoad: "login-required" })
     .then(function (authenticated) {
       if (authenticated) {
-        $("#loginModal").modal('hide');
+        loginModal.hide();
         startApplication();
       } else {
         console.error("User not authenticated");
