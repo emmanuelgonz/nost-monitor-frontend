@@ -49,7 +49,7 @@ function startApplication() {
   $("#navLogout")
     .text("Logout " + keycloak.tokenParsed.preferred_username)
     .show();
-  loginModal.hide();
+  
   fetchAccessToken().then(token => {
     if (token) {
       connect(token);
