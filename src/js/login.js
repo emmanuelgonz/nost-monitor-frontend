@@ -142,12 +142,6 @@ $(document).ready(function () {
     loginModal.show();
   }
 
-  // Handle login button click to show modal
-  $("#navLogin").on("click", function() {
-    const loginModal = new bootstrap.Modal(document.getElementById('loginModal'));
-    loginModal.show();
-  });
-
   $('#loginForm').on('submit', function (e) {
     e.preventDefault();
     loginModal.hide(); // Hide the modal immediately on submit
