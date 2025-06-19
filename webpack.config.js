@@ -103,6 +103,10 @@ module.exports = {
           from: path.join(cesiumSource, "Widgets"),
           to: `${cesiumBaseUrl}/Widgets`,
         },
+        {
+          from: "silent-check-sso.html",
+          to: "silent-check-sso.html",
+        },
       ],
     }),
     new webpack.DefinePlugin({
