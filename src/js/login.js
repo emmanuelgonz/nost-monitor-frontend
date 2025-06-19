@@ -50,6 +50,7 @@ function startApplication() {
   $("#navLogout")
     .text("Logout " + keycloak.tokenParsed.preferred_username)
     .show();
+  loginModal.hide();
   console.log(KEYCLOAK_HOST, KEYCLOAK_PORT, KEYCLOAK_REALM, KEYCLOAK_CLIENT_ID);
   fetchAccessToken().then(token => {
     if (token) {
