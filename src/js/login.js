@@ -82,69 +82,71 @@ const DEFAULT_KEYCLOAK_WEB_LOGIN_CLIENT_ID = process.env.DEFAULT_KEYCLOAK_WEB_LO
 const DEFAULT_KEYCLOAK_CLIENT_ID = process.env.DEFAULT_KEYCLOAK_CLIENT_ID || '';
 const DEFAULT_KEYCLOAK_CLIENT_SECRET = process.env.DEFAULT_KEYCLOAK_CLIENT_SECRET || '';
 
+// Show login modal on page load
+$(document).ready(function () {
+  // Set default values in modal fields
+  $('#loginExchange').val(DEFAULT_RABBITMQ_EXCHANGE);
+  $('#loginKeycloakHost').val(DEFAULT_KEYCLOAK_HOST);
+  $('#loginKeycloakPort').val(DEFAULT_KEYCLOAK_PORT);
+  $('#loginKeycloakRealm').val(DEFAULT_KEYCLOAK_REALM);
+  $('#loginKeycloakWebLoginClientId').val(DEFAULT_KEYCLOAK_WEB_LOGIN_CLIENT_ID);
+  $('#loginKeycloakClientId').val();
+  $('#loginKeycloakClientSecret').val();
+  
+  const loginModal = new bootstrap.Modal(document.getElementById('loginModal'));
+  loginModal.show();
 
-// Set default values in modal fields
-$('#loginExchange').val(DEFAULT_RABBITMQ_EXCHANGE);
-$('#loginKeycloakHost').val(DEFAULT_KEYCLOAK_HOST);
-$('#loginKeycloakPort').val(DEFAULT_KEYCLOAK_PORT);
-$('#loginKeycloakRealm').val(DEFAULT_KEYCLOAK_REALM);
-$('#loginKeycloakWebLoginClientId').val(DEFAULT_KEYCLOAK_WEB_LOGIN_CLIENT_ID);
-$('#loginKeycloakClientId').val();
-$('#loginKeycloakClientSecret').val();
+  $('#loginForm').on('submit', function (e) {
+    e.preventDefault();
+    loginModal.hide(); // Hide the modal immediately on submit
+    const $connectBtn = $('#loginConnect');
+    $connectBtn.prop('disabled', true); // Disable button to prevent double click
+    // Get values from modal fields
+    const exchange = $('#loginExchange').val();
+    const host = $('#loginKeycloakHost').val();
+    const port = $('#loginKeycloakPort').val();
+    const realm = $('#loginKeycloakRealm').val();
+    const clientId = $('#loginKeycloakClientId').val() || DEFAULT_KEYCLOAK_CLIENT_ID;
+    const clientSecret = $('#loginKeycloakClientSecret').val() || DEFAULT_KEYCLOAK_CLIENT_SECRET;
+    const webLoginClientId = $('#loginKeycloakWebLoginClientId').val();
+    const encrypted = $('#loginEncrypted').is(':checked');
 
-const loginModal = new bootstrap.Modal(document.getElementById('loginModal'));
-loginModal.show();
+    keycloakConfig = {
+      host,
+      port,
+      realm,
+      clientId,
+      clientSecret,
+      webLoginClientId,
+      encrypted,
+      exchange
+    };
 
-$('#loginForm').on('submit', function (e) {
-  e.preventDefault();
-  loginModal.hide(); // Hide the modal immediately on submit
-  const $connectBtn = $('#loginConnect');
-  $connectBtn.prop('disabled', true); // Disable button to prevent double click
-  // Get values from modal fields
-  const exchange = $('#loginExchange').val();
-  const host = $('#loginKeycloakHost').val();
-  const port = $('#loginKeycloakPort').val();
-  const realm = $('#loginKeycloakRealm').val();
-  const clientId = $('#loginKeycloakClientId').val() || DEFAULT_KEYCLOAK_CLIENT_ID;
-  const clientSecret = $('#loginKeycloakClientSecret').val() || DEFAULT_KEYCLOAK_CLIENT_SECRET;
-  const webLoginClientId = $('#loginKeycloakWebLoginClientId').val();
-  const encrypted = $('#loginEncrypted').is(':checked');
+    // Set user exchange if needed
+    if (setUserExchange) setUserExchange(exchange);
 
-  keycloakConfig = {
-    host,
-    port,
-    realm,
-    clientId,
-    clientSecret,
-    webLoginClientId,
-    encrypted,
-    exchange
-  };
+    // Use https if encrypted, http otherwise
+    const protocol = encrypted ? 'https' : 'http';
 
-  // Set user exchange if needed
-  if (setUserExchange) setUserExchange(exchange);
-
-  // Use https if encrypted, http otherwise
-  const protocol = encrypted ? 'https' : 'http';
-
-  keycloak = new Keycloak({
-    url: `${protocol}://${host}:${port}/`,
-    realm: realm,
-    clientId: webLoginClientId,
-  });
-
-  keycloak
-    .init({ onLoad: "login-required" })
-    .then(function (authenticated) {
-      if (authenticated) {
-        console.log("User authenticated.");
-        startApplication(loginModal); // Pass modal to startApplication
-      } else {
-        console.error("User not authenticated.");
-        $connectBtn.prop('disabled', false); // Re-enable on failure
-      }
-    })
-    .catch(function () {
-      $connectBtn.prop('disabled', false); // Re-enable on error
+    keycloak = new Keycloak({
+      url: `${protocol}://${host}:${port}/`,
+      realm: realm,
+      clientId: webLoginClientId,
     });
+
+    keycloak
+      .init({ onLoad: "login-required" })
+      .then(function (authenticated) {
+        if (authenticated) {
+          console.log("User authenticated.");
+          startApplication(loginModal); // Pass modal to startApplication
+        } else {
+          console.error("User not authenticated.");
+          $connectBtn.prop('disabled', false); // Re-enable on failure
+        }
+      })
+      .catch(function () {
+        $connectBtn.prop('disabled', false); // Re-enable on error
+      });
+  });
 });
