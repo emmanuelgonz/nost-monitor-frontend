@@ -57,8 +57,6 @@ function startApplication(loginModal) {
     if (token) {
       try {
         await connect(token); // Wait for broker connection
-        if (loginModal) loginModal.hide(); // Hide modal only after successful connection
-        // loginModal.hide(); // Hide modal only after successful connection
         startTokenRefresh();
       } catch (err) {
         console.error("Could not connect to broker:", err);
@@ -100,6 +98,7 @@ $(document).ready(function () {
 
   $('#loginForm').on('submit', function (e) {
     e.preventDefault();
+    loginModal.hide(); // Hide the modal immediately on submit
     const $connectBtn = $('#loginConnect');
     $connectBtn.prop('disabled', true); // Disable button to prevent double click
     // Get values from modal fields
@@ -149,6 +148,5 @@ $(document).ready(function () {
       .catch(function () {
         $connectBtn.prop('disabled', false); // Re-enable on error
       });
-    loginModal.hide(); // Hide modal immediately after form submission
   });
 });
