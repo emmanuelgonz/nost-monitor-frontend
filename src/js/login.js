@@ -106,6 +106,7 @@ $("#loginForm").on("submit", (e) => {
     .init({ onLoad: "login-required" })
     .then(function (authenticated) {
       if (authenticated) {
+        console.log("User authenticated");
         startApplication();
       } else {
         console.error("User not authenticated");
