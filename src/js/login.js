@@ -86,8 +86,8 @@ $(document).ready(function () {
   $('#loginKeycloakPort').val(DEFAULT_KEYCLOAK_PORT);
   $('#loginKeycloakRealm').val(DEFAULT_KEYCLOAK_REALM);
   $('#loginKeycloakWebLoginClientId').val(DEFAULT_KEYCLOAK_WEB_LOGIN_CLIENT_ID);
-  $('#loginKeycloakClientId').val() || DEFAULT_KEYCLOAK_CLIENT_ID;
-  $('#loginKeycloakClientSecret').val() || DEFAULT_KEYCLOAK_CLIENT_SECRET;
+  $('#loginKeycloakClientId').val();
+  $('#loginKeycloakClientSecret').val();
 
   const loginModal = new bootstrap.Modal(document.getElementById('loginModal'));
   loginModal.show();
@@ -99,8 +99,8 @@ $(document).ready(function () {
     const host = $('#loginKeycloakHost').val();
     const port = $('#loginKeycloakPort').val();
     const realm = $('#loginKeycloakRealm').val();
-    const clientId = $('#loginKeycloakClientId').val();
-    const clientSecret = $('#loginKeycloakClientSecret').val();
+    const clientId = $('#loginKeycloakClientId').val() || DEFAULT_KEYCLOAK_CLIENT_ID;
+    const clientSecret = $('#loginKeycloakClientSecret').val() || DEFAULT_KEYCLOAK_CLIENT_SECRET;
     const webLoginClientId = $('#loginKeycloakWebLoginClientId').val();
     const encrypted = $('#loginEncrypted').is(':checked');
 
