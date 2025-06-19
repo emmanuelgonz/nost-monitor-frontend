@@ -84,12 +84,12 @@ keycloak
   .init({ onLoad: "login-required" })
   .then(function (authenticated) {
     if (authenticated) {
-      console.log("User authenticated");
+      console.log("User authenticated.");
       startApplication();
     } else {
-      console.error("User not authenticated");
+      console.error("User not authenticated.");
     }
   })
   .catch(function () {
-    console.error("Failed to initialize Keycloak");
+    console.error("Failed to initialize Keycloak.");
   });
