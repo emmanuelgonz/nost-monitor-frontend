@@ -92,7 +92,7 @@ $(document).ready(function () {
   $('#loginKeycloakWebLoginClientId').val(DEFAULT_KEYCLOAK_WEB_LOGIN_CLIENT_ID);
   $('#loginKeycloakClientId').val();
   $('#loginKeycloakClientSecret').val();
-
+  
   const loginModal = new bootstrap.Modal(document.getElementById('loginModal'));
   loginModal.show();
 
