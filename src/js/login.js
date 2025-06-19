@@ -3,15 +3,18 @@ import $ from "jquery";
 import Keycloak from "keycloak-js";
 import { connect, updateAmqpToken, setUserExchange } from "./main";
 
+let keycloak = null;
+let keycloakConfig = {};
+
 function fetchAccessToken() {
-  return fetch(`https://${KEYCLOAK_HOST}:${KEYCLOAK_PORT}/realms/${KEYCLOAK_REALM}/protocol/openid-connect/token`, {
+  return fetch(`https://${keycloakConfig.host}:${keycloakConfig.port}/realms/${keycloakConfig.realm}/protocol/openid-connect/token`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/x-www-form-urlencoded'
     },
     body: new URLSearchParams({
-      'client_id': KEYCLOAK_CLIENT_ID,
-      'client_secret': KEYCLOAK_CLIENT_SECRET,
+      'client_id': keycloakConfig.clientId,
+      'client_secret': keycloakConfig.clientSecret,
       'grant_type': 'client_credentials'
     })
   })
@@ -66,30 +69,59 @@ function startApplication() {
   });
 }
 
-// Keycloak configuration for user authentication
-const KEYCLOAK_HOST = process.env.DEFAULT_KEYCLOAK_HOST;
-const KEYCLOAK_PORT = process.env.DEFAULT_KEYCLOAK_PORT;
-const KEYCLOAK_REALM = process.env.DEFAULT_KEYCLOAK_REALM;
-const KEYCLOAK_WEB_LOGIN_CLIENT_ID = process.env.DEFAULT_KEYCLOAK_WEB_LOGIN_CLIENT_ID;
-const KEYCLOAK_CLIENT_ID = process.env.DEFAULT_KEYCLOAK_CLIENT_ID;
-const KEYCLOAK_CLIENT_SECRET = process.env.DEFAULT_KEYCLOAK_CLIENT_SECRET;
+// Show login modal on page load
+$(document).ready(function () {
+  const loginModal = new bootstrap.Modal(document.getElementById('loginModal'));
+  loginModal.show();
 
-const keycloak = new Keycloak({
-  url: `https://${KEYCLOAK_HOST}:${KEYCLOAK_PORT}/`,
-  realm: KEYCLOAK_REALM,
-  clientId: KEYCLOAK_WEB_LOGIN_CLIENT_ID,
-});
+  $('#loginForm').on('submit', function (e) {
+    e.preventDefault();
+    // Get values from modal fields
+    const exchange = $('#loginExchange').val();
+    const host = $('#loginKeycloakHost').val();
+    const port = $('#loginKeycloakPort').val();
+    const realm = $('#loginKeycloakRealm').val();
+    const clientId = $('#loginKeycloakClientId').val();
+    const clientSecret = $('#loginKeycloakClientSecret').val();
+    const webLoginClientId = $('#loginKeycloakWebLoginClientId').val();
+    const encrypted = $('#loginEncrypted').is(':checked');
 
-keycloak
-  .init({ onLoad: "login-required" })
-  .then(function (authenticated) {
-    if (authenticated) {
-      console.log("User authenticated.");
-      startApplication();
-    } else {
-      console.error("User not authenticated.");
-    }
-  })
-  .catch(function () {
-    console.error("Failed to initialize Keycloak.");
+    keycloakConfig = {
+      host,
+      port,
+      realm,
+      clientId,
+      clientSecret,
+      webLoginClientId,
+      encrypted,
+      exchange
+    };
+
+    // Set user exchange if needed
+    if (setUserExchange) setUserExchange(exchange);
+
+    // Use https if encrypted, http otherwise
+    const protocol = encrypted ? 'https' : 'http';
+
+    keycloak = new Keycloak({
+      url: `${protocol}://${host}:${port}/`,
+      realm: realm,
+      clientId: webLoginClientId,
+    });
+
+    keycloak
+      .init({ onLoad: "login-required" })
+      .then(function (authenticated) {
+        if (authenticated) {
+          console.log("User authenticated.");
+          loginModal.hide();
+          startApplication();
+        } else {
+          console.error("User not authenticated.");
+        }
+      })
+      .catch(function () {
+        console.error("Failed to initialize Keycloak.");
+      });
   });
+});
