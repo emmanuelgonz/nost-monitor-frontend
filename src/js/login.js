@@ -46,12 +46,12 @@ function startTokenRefresh() {
 }
 
 function startApplication() {
+  console.log(KEYCLOAK_HOST, KEYCLOAK_PORT, KEYCLOAK_REALM, KEYCLOAK_CLIENT_ID);
   $("#navLogin").hide();
   $("#navLogout")
     .text("Logout " + keycloak.tokenParsed.preferred_username)
     .show();
-  loginModal.hide();
-  console.log(KEYCLOAK_HOST, KEYCLOAK_PORT, KEYCLOAK_REALM, KEYCLOAK_CLIENT_ID);
+
   fetchAccessToken().then(token => {
     if (token) {
       connect(token);
@@ -89,7 +89,6 @@ loginModal.show();
 // const KEYCLOAK_CLIENT_SECRET = process.env.DEFAULT_KEYCLOAK_CLIENT_SECRET;
 
 $("#loginForm").on("submit", (e) => {
-  loginModal.hide();
   e.preventDefault();
   const KEYCLOAK_HOST = $("#loginKeycloakHost").val();
   const KEYCLOAK_PORT =  parseInt($("#loginKeycloakPort").val());
