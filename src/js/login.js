@@ -4,6 +4,7 @@ import Keycloak from "keycloak-js";
 import { connect, updateAmqpToken, setUserExchange } from "./main";
 
 function fetchAccessToken() {
+  console.log(KEYCLOAK_HOST, KEYCLOAK_PORT, KEYCLOAK_REALM, KEYCLOAK_CLIENT_ID);
   return fetch(`https://${KEYCLOAK_HOST}:${KEYCLOAK_PORT}/realms/${KEYCLOAK_REALM}/protocol/openid-connect/token`, {
     method: 'POST',
     headers: {
