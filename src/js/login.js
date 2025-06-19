@@ -47,16 +47,21 @@ function startTokenRefresh() {
   }, 3 * 60 * 1000); // Refresh every 3 minutes
 }
 
-function startApplication() {
+function startApplication(loginModal) {
   $("#navLogin").hide();
   $("#navLogout")
     .text("Logout " + keycloak.tokenParsed.preferred_username)
     .show();
 
-  fetchAccessToken().then(token => {
+  fetchAccessToken().then(async token => {
     if (token) {
-      connect(token);
-      startTokenRefresh();
+      try {
+        await connect(token); // Wait for broker connection
+        if (loginModal) loginModal.hide(); // Hide modal only after successful connection
+        startTokenRefresh();
+      } catch (err) {
+        console.error("Could not connect to broker:", err);
+      }
     } else {
       console.error("Could not fetch AMQP access token.");
     }
@@ -132,8 +137,7 @@ $(document).ready(function () {
       .then(function (authenticated) {
         if (authenticated) {
           console.log("User authenticated.");
-          loginModal.hide();
-          startApplication();
+          startApplication(loginModal); // Pass modal to startApplication
         } else {
           console.error("User not authenticated.");
         }
