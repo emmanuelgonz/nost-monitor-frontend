@@ -53,15 +53,10 @@ function startApplication(loginModal) {
     .text("Logout " + keycloak.tokenParsed.preferred_username)
     .show();
 
-  fetchAccessToken().then(async token => {
+  fetchAccessToken().then(token => {
     if (token) {
-      try {
-        await connect(token); // Wait for broker connection
-        if (loginModal) loginModal.hide(); // Hide modal only after successful connection
-        startTokenRefresh();
-      } catch (err) {
-        console.error("Could not connect to broker:", err);
-      }
+      connect(token);
+      startTokenRefresh();
     } else {
       console.error("Could not fetch AMQP access token.");
     }
@@ -99,8 +94,6 @@ $(document).ready(function () {
 
   $('#loginForm').on('submit', function (e) {
     e.preventDefault();
-    const $connectBtn = $('#loginConnect');
-    $connectBtn.prop('disabled', true); // Disable button to prevent double click
     // Get values from modal fields
     const exchange = $('#loginExchange').val();
     const host = $('#loginKeycloakHost').val();
@@ -142,11 +135,10 @@ $(document).ready(function () {
           startApplication(loginModal); // Pass modal to startApplication
         } else {
           console.error("User not authenticated.");
-          $connectBtn.prop('disabled', false); // Re-enable on failure
         }
       })
       .catch(function () {
-        $connectBtn.prop('disabled', false); // Re-enable on error
+        console.error("Failed to initialize Keycloak.");
       });
   });
 });
