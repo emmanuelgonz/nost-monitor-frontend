@@ -82,7 +82,6 @@ const DEFAULT_KEYCLOAK_WEB_LOGIN_CLIENT_ID = process.env.DEFAULT_KEYCLOAK_WEB_LO
 const DEFAULT_KEYCLOAK_CLIENT_ID = process.env.DEFAULT_KEYCLOAK_CLIENT_ID || '';
 const DEFAULT_KEYCLOAK_CLIENT_SECRET = process.env.DEFAULT_KEYCLOAK_CLIENT_SECRET || '';
 
-// Show login modal on page load
 $(document).ready(function () {
   // Set default values in modal fields
   $('#loginExchange').val(DEFAULT_RABBITMQ_EXCHANGE);
@@ -92,15 +91,44 @@ $(document).ready(function () {
   $('#loginKeycloakWebLoginClientId').val(DEFAULT_KEYCLOAK_WEB_LOGIN_CLIENT_ID);
   $('#loginKeycloakClientId').val();
   $('#loginKeycloakClientSecret').val();
-  
-  const loginModal = new bootstrap.Modal(document.getElementById('loginModal'));
-  loginModal.show();
+
+  // Use defaults for protocol and webLoginClientId
+  const protocol = DEFAULT_KEYCLOAK_PORT === "443" ? "https" : "http";
+  keycloak = new Keycloak({
+    url: `${protocol}://${DEFAULT_KEYCLOAK_HOST}:${DEFAULT_KEYCLOAK_PORT}/`,
+    realm: DEFAULT_KEYCLOAK_REALM,
+    clientId: DEFAULT_KEYCLOAK_WEB_LOGIN_CLIENT_ID,
+  });
+
+  keycloak
+    .init({ onLoad: "check-sso", silentCheckSsoRedirectUri: window.location.origin + "/silent-check-sso.html" })
+    .then(function (authenticated) {
+      if (authenticated) {
+        // User is already authenticated, start the app
+        keycloakConfig = {
+          host: DEFAULT_KEYCLOAK_HOST,
+          port: DEFAULT_KEYCLOAK_PORT,
+          realm: DEFAULT_KEYCLOAK_REALM,
+          clientId: DEFAULT_KEYCLOAK_CLIENT_ID,
+          clientSecret: DEFAULT_KEYCLOAK_CLIENT_SECRET,
+          webLoginClientId: DEFAULT_KEYCLOAK_WEB_LOGIN_CLIENT_ID,
+          encrypted: true,
+          exchange: DEFAULT_RABBITMQ_EXCHANGE,
+        };
+        startApplication(null);
+      } else {
+        // Not authenticated, show login modal
+        const loginModal = new bootstrap.Modal(document.getElementById('loginModal'));
+        loginModal.show();
+      }
+    });
 
   $('#loginForm').on('submit', function (e) {
     e.preventDefault();
-    loginModal.hide(); // Hide the modal immediately on submit
+    const loginModal = bootstrap.Modal.getInstance(document.getElementById('loginModal'));
+    loginModal.hide();
     const $connectBtn = $('#loginConnect');
-    $connectBtn.prop('disabled', true); // Disable button to prevent double click
+    $connectBtn.prop('disabled', true);
     // Get values from modal fields
     const exchange = $('#loginExchange').val();
     const host = $('#loginKeycloakHost').val();
