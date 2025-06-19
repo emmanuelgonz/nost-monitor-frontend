@@ -94,30 +94,6 @@ $(document).ready(function () {
   $('#loginKeycloakClientSecret').val();
 
   const loginModal = new bootstrap.Modal(document.getElementById('loginModal'));
-
-  // Check for existing Keycloak session/token
-  const storedToken = sessionStorage.getItem('keycloakToken');
-  if (storedToken) {
-    // Try to parse and validate token (simple check, you may want to add expiry check)
-    try {
-      const parsedToken = JSON.parse(atob(storedToken.split('.')[1]));
-      if (parsedToken && parsedToken.exp * 1000 > Date.now()) {
-        // Token is valid, skip modal and start app
-        keycloak = new Keycloak({
-          url: `${window.location.protocol}//${DEFAULT_KEYCLOAK_HOST}:${DEFAULT_KEYCLOAK_PORT}/`,
-          realm: DEFAULT_KEYCLOAK_REALM,
-          clientId: DEFAULT_KEYCLOAK_WEB_LOGIN_CLIENT_ID,
-        });
-        keycloak.token = storedToken;
-        keycloak.tokenParsed = parsedToken;
-        startApplication(loginModal);
-        return;
-      }
-    } catch (e) {
-      // Invalid token, proceed to show modal
-    }
-  }
-
   loginModal.show();
 
   $('#loginForm').on('submit', function (e) {
@@ -162,8 +138,6 @@ $(document).ready(function () {
       .init({ onLoad: "login-required" })
       .then(function (authenticated) {
         if (authenticated) {
-          // Store token for future reloads
-          sessionStorage.setItem('keycloakToken', keycloak.token);
           console.log("User authenticated.");
           startApplication(loginModal); // Pass modal to startApplication
         } else {
