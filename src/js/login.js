@@ -47,7 +47,7 @@ function startTokenRefresh() {
   }, 3 * 60 * 1000); // Refresh every 3 minutes
 }
 
-function startApplication(loginModal) {
+function startApplication() {
   $("#navLogin").hide();
   $("#navLogout")
     .text("Logout " + keycloak.tokenParsed.preferred_username)
@@ -113,14 +113,13 @@ $(document).ready(function () {
     .then(function (authenticated) {
       if (authenticated) {
         console.log("User authenticated.");
-        startApplication(loginModal); // Pass modal to startApplication
+        startApplication();
       } else {
         console.error("User not authenticated.");
-        $connectBtn.prop('disabled', false); // Re-enable on failure
       }
     })
     .catch(function () {
-      $connectBtn.prop('disabled', false); // Re-enable on error
+      console.error("Failed to initialize Keycloak");
     });
 });
 
