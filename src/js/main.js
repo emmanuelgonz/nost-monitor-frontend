@@ -24,7 +24,7 @@ async function connect(accessToken) {
     amqpConn = await amqp.connect();
     amqpChannel = await amqpConn.channel();
     await amqpChannel.exchangeDeclare(RABBITMQ_EXCHANGE, "topic", {
-      durable: false,
+      durable: true,
       autoDelete: true,
     });
     const q = await amqpChannel.queue("", { exclusive: true });
