@@ -74,30 +74,17 @@ function startApplication(loginModal) {
 }
 
 // Set default values from environment variables
-const DEFAULT_RABBITMQ_EXCHANGE = process.env.DEFAULT_RABBITMQ_EXCHANGE || '';
-const DEFAULT_KEYCLOAK_HOST = process.env.DEFAULT_KEYCLOAK_HOST || '';
-const DEFAULT_KEYCLOAK_PORT = process.env.DEFAULT_KEYCLOAK_PORT || '';
-const DEFAULT_KEYCLOAK_REALM = process.env.DEFAULT_KEYCLOAK_REALM || '';
-const DEFAULT_KEYCLOAK_WEB_LOGIN_CLIENT_ID = process.env.DEFAULT_KEYCLOAK_WEB_LOGIN_CLIENT_ID || '';
-const DEFAULT_KEYCLOAK_CLIENT_ID = process.env.DEFAULT_KEYCLOAK_CLIENT_ID || '';
-const DEFAULT_KEYCLOAK_CLIENT_SECRET = process.env.DEFAULT_KEYCLOAK_CLIENT_SECRET || '';
+const exchange = process.env.DEFAULT_RABBITMQ_EXCHANGE || '';
+const host = process.env.DEFAULT_KEYCLOAK_HOST || '';
+const port = process.env.DEFAULT_KEYCLOAK_PORT || '';
+const realm = process.env.DEFAULT_KEYCLOAK_REALM || '';
+const webLoginClientId = process.env.DEFAULT_KEYCLOAK_WEB_LOGIN_CLIENT_ID || '';
+const clientId = process.env.DEFAULT_KEYCLOAK_CLIENT_ID || '';
+const clientSecret = process.env.DEFAULT_KEYCLOAK_CLIENT_SECRET || '';
+const encrypted = process.env.DEFAULT_KEYCLOAK_ENCRYPTED === 'true' || true;
 
 // Show login modal on page load
 $(document).ready(function () {
-
-  e.preventDefault();
-  loginModal.hide(); // Hide the modal immediately on submit
-  const $connectBtn = $('#loginConnect');
-  $connectBtn.prop('disabled', true); // Disable button to prevent double click
-  // Get values from modal fields
-  const exchange = $('#loginExchange').val();
-  const host = $('#loginKeycloakHost').val();
-  const port = $('#loginKeycloakPort').val();
-  const realm = $('#loginKeycloakRealm').val();
-  const clientId = $('#loginKeycloakClientId').val() || DEFAULT_KEYCLOAK_CLIENT_ID;
-  const clientSecret = $('#loginKeycloakClientSecret').val() || DEFAULT_KEYCLOAK_CLIENT_SECRET;
-  const webLoginClientId = $('#loginKeycloakWebLoginClientId').val();
-  const encrypted = $('#loginEncrypted').is(':checked');
 
   keycloakConfig = {
     host,
