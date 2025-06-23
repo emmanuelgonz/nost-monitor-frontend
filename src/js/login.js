@@ -152,7 +152,7 @@ $(document).ready(function () {
         .then(function (authenticated) {
           if (authenticated) {
             console.log("User authenticated.");
-            startApplication(null, true); // Token will be fetched inside
+            // startApplication will be called via onAuthSuccess event
           } else {
             console.error("User not authenticated.");
             $connectBtn.prop('disabled', false); // Re-enable on failure
@@ -161,6 +161,12 @@ $(document).ready(function () {
         .catch(function () {
           $connectBtn.prop('disabled', false); // Re-enable on error
         });
+      
+      // Set up the authentication success event handler
+      keycloak.onAuthSuccess = function() {
+        console.log('Authenticated!');
+        startApplication(null, true); // Token will be fetched inside
+      };
     } else {
       // No Keycloak: connect directly
       startApplication(null, false);
