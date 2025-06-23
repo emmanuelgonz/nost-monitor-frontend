@@ -165,6 +165,7 @@ $(document).ready(function () {
       // Set up the authentication success event handler
       keycloak.onAuthSuccess = function() {
         console.log('Authenticated!');
+        loginModal.hide();
         startApplication(null, true); // Token will be fetched inside
       };
     } else {
