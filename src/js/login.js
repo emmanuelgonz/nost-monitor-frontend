@@ -73,52 +73,73 @@ function startApplication() {
 }
 
 // Set default values from environment variables
-const exchange = process.env.DEFAULT_RABBITMQ_EXCHANGE || '';
-const host = process.env.DEFAULT_KEYCLOAK_HOST || '';
-const port = process.env.DEFAULT_KEYCLOAK_PORT || '';
-const realm = process.env.DEFAULT_KEYCLOAK_REALM || '';
-const webLoginClientId = process.env.DEFAULT_KEYCLOAK_WEB_LOGIN_CLIENT_ID || '';
-const clientId = process.env.DEFAULT_KEYCLOAK_CLIENT_ID || '';
-const clientSecret = process.env.DEFAULT_KEYCLOAK_CLIENT_SECRET || '';
-const encrypted = process.env.DEFAULT_KEYCLOAK_ENCRYPTED === 'true' || true;
+const DEFAULT_RABBITMQ_EXCHANGE = process.env.DEFAULT_RABBITMQ_EXCHANGE || '';
+const DEFAULT_KEYCLOAK_HOST = process.env.DEFAULT_KEYCLOAK_HOST || '';
+const DEFAULT_KEYCLOAK_PORT = process.env.DEFAULT_KEYCLOAK_PORT || '';
+const DEFAULT_KEYCLOAK_REALM = process.env.DEFAULT_KEYCLOAK_REALM || '';
+const DEFAULT_KEYCLOAK_WEB_LOGIN_CLIENT_ID = process.env.DEFAULT_KEYCLOAK_WEB_LOGIN_CLIENT_ID || '';
+const DEFAULT_KEYCLOAK_CLIENT_ID = process.env.DEFAULT_KEYCLOAK_CLIENT_ID || '';
+const DEFAULT_KEYCLOAK_CLIENT_SECRET = process.env.DEFAULT_KEYCLOAK_CLIENT_SECRET || '';
 
 // Show login modal on page load
 $(document).ready(function () {
-
-  keycloakConfig = {
-    host,
-    port,
-    realm,
-    clientId,
-    clientSecret,
-    webLoginClientId,
-    encrypted,
-    exchange
-  };
-
-  // Set user exchange if needed
-  if (setUserExchange) setUserExchange(exchange);
-
-  // Use https if encrypted, http otherwise
-  const protocol = encrypted ? 'https' : 'http';
-
-  keycloak = new Keycloak({
-    url: `${protocol}://${host}:${port}/`,
-    realm: realm,
-    clientId: webLoginClientId,
-  });
-
-  keycloak
-    .init({ onLoad: "login-required" })
-    .then(function (authenticated) {
-      if (authenticated) {
-        console.log("User authenticated.");
-        startApplication();
-      } else {
-        console.error("User not authenticated.");
-      }
-    })
-    .catch(function () {
-      console.error("Failed to initialize Keycloak");
+  // Set default values in modal fields
+  $('#loginExchange').val(DEFAULT_RABBITMQ_EXCHANGE);
+  $('#loginKeycloakHost').val(DEFAULT_KEYCLOAK_HOST);
+  $('#loginKeycloakPort').val(DEFAULT_KEYCLOAK_PORT);
+  $('#loginKeycloakRealm').val(DEFAULT_KEYCLOAK_REALM);
+  $('#loginKeycloakWebLoginClientId').val(DEFAULT_KEYCLOAK_WEB_LOGIN_CLIENT_ID);
+  $('#loginKeycloakClientId').val();
+  $('#loginKeycloakClientSecret').val();
+  
+  const loginModal = new bootstrap.Modal(document.getElementById('loginModal'));
+  loginModal.show();
+  $('#loginForm').on('submit', function (e) {
+    e.preventDefault();
+    loginModal.hide(); // Hide the modal immediately on submit
+    const $connectBtn = $('#loginConnect');
+    $connectBtn.prop('disabled', true); // Disable button to prevent double click
+    // Get values from modal fields
+    const exchange = $('#loginExchange').val();
+    const host = $('#loginKeycloakHost').val();
+    const port = $('#loginKeycloakPort').val();
+    const realm = $('#loginKeycloakRealm').val();
+    const clientId = $('#loginKeycloakClientId').val() || DEFAULT_KEYCLOAK_CLIENT_ID;
+    const clientSecret = $('#loginKeycloakClientSecret').val() || DEFAULT_KEYCLOAK_CLIENT_SECRET;
+    const webLoginClientId = $('#loginKeycloakWebLoginClientId').val();
+    const encrypted = $('#loginEncrypted').is(':checked');
+    keycloakConfig = {
+      host,
+      port,
+      realm,
+      clientId,
+      clientSecret,
+      webLoginClientId,
+      encrypted,
+      exchange
+    };
+    // Set user exchange if needed
+    if (setUserExchange) setUserExchange(exchange);
+    // Use https if encrypted, http otherwise
+    const protocol = encrypted ? 'https' : 'http';
+    keycloak = new Keycloak({
+      url: `${protocol}://${host}:${port}/`,
+      realm: realm,
+      clientId: webLoginClientId,
     });
+    keycloak
+      .init({ onLoad: "login-required" })
+      .then(function (authenticated) {
+        if (authenticated) {
+          console.log("User authenticated.");
+          startApplication(loginModal); // Pass modal to startApplication
+        } else {
+          console.error("User not authenticated.");
+          $connectBtn.prop('disabled', false); // Re-enable on failure
+        }
+      })
+      .catch(function () {
+        $connectBtn.prop('disabled', false); // Re-enable on error
+      });
+  });
 });
