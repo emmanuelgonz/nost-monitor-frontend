@@ -47,27 +47,38 @@ function startTokenRefresh() {
   }, 3 * 60 * 1000); // Refresh every 3 minutes
 }
 
-function startApplication() {
+function startApplication(token, useKeycloak) {
   $("#navLogin").hide();
-  $("#navLogout")
-    .text("Logout " + keycloak.tokenParsed.preferred_username)
-    .show();
+  if (useKeycloak && keycloak && keycloak.tokenParsed) {
+    $("#navLogout")
+      .text("Logout " + keycloak.tokenParsed.preferred_username)
+      .show();
+  } else {
+    $("#navLogout").text("Logout").show();
+  }
 
-  fetchAccessToken().then(async token => {
-    if (token) {
-      try {
-        await connect(token); // Wait for broker connection
-        startTokenRefresh();
-      } catch (err) {
-        console.error("Could not connect to broker:", err);
+  if (useKeycloak) {
+    fetchAccessToken().then(async token => {
+      if (token) {
+        try {
+          await connect(token); // Wait for broker connection
+          startTokenRefresh();
+        } catch (err) {
+          console.error("Could not connect to broker:", err);
+        }
+      } else {
+        console.error("Could not fetch AMQP access token.");
       }
-    } else {
-      console.error("Could not fetch AMQP access token.");
-    }
-  });
+    });
+  } else {
+    // No Keycloak: connect directly to RabbitMQ
+    connect(null); // Or pass any required params for direct connection
+  }
 
   $("#navLogout").on("click", () => {
-    keycloak.logout();
+    if (useKeycloak && keycloak) {
+      keycloak.logout();
+    }
     $("#navLogout").text("Logout").hide();
   });
 }
@@ -91,7 +102,7 @@ $(document).ready(function () {
   $('#loginKeycloakWebLoginClientId').val(DEFAULT_KEYCLOAK_WEB_LOGIN_CLIENT_ID);
   $('#loginKeycloakClientId').val();
   $('#loginKeycloakClientSecret').val();
-  
+
   const loginModal = new bootstrap.Modal(document.getElementById('loginModal'));
   loginModal.show();
   $('#loginForm').on('submit', function (e) {
@@ -108,6 +119,7 @@ $(document).ready(function () {
     const clientSecret = $('#loginKeycloakClientSecret').val() || DEFAULT_KEYCLOAK_CLIENT_SECRET;
     const webLoginClientId = $('#loginKeycloakWebLoginClientId').val();
     const encrypted = $('#loginEncrypted').is(':checked');
+    const useKeycloak = $('#useKeycloak').is(':checked');
     keycloakConfig = {
       host,
       port,
@@ -120,26 +132,31 @@ $(document).ready(function () {
     };
     // Set user exchange if needed
     if (setUserExchange) setUserExchange(exchange);
-    // Use https if encrypted, http otherwise
-    const protocol = encrypted ? 'https' : 'http';
-    keycloak = new Keycloak({
-      url: `${protocol}://${host}:${port}/`,
-      realm: realm,
-      clientId: webLoginClientId,
-    });
-    keycloak
-      .init({ onLoad: "login-required" })
-      .then(function (authenticated) {
-        if (authenticated) {
-          console.log("User authenticated.");
-          startApplication(loginModal); // Pass modal to startApplication
-        } else {
-          console.error("User not authenticated.");
-          $connectBtn.prop('disabled', false); // Re-enable on failure
-        }
-      })
-      .catch(function () {
-        $connectBtn.prop('disabled', false); // Re-enable on error
+    if (useKeycloak) {
+      // Use https if encrypted, http otherwise
+      const protocol = encrypted ? 'https' : 'http';
+      keycloak = new Keycloak({
+        url: `${protocol}://${host}:${port}/`,
+        realm: realm,
+        clientId: webLoginClientId,
       });
+      keycloak
+        .init({ onLoad: "login-required" })
+        .then(function (authenticated) {
+          if (authenticated) {
+            console.log("User authenticated.");
+            startApplication(null, true); // Token will be fetched inside
+          } else {
+            console.error("User not authenticated.");
+            $connectBtn.prop('disabled', false); // Re-enable on failure
+          }
+        })
+        .catch(function () {
+          $connectBtn.prop('disabled', false); // Re-enable on error
+        });
+    } else {
+      // No Keycloak: connect directly
+      startApplication(null, false);
+    }
   });
 });

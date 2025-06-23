@@ -14,8 +14,17 @@
       <div class="modal-body">
         <form id="loginForm">
           <div class="container">
+            <!-- Keycloak Option Toggle -->
+            <div class="mb-3">
+              <div class="form-check">
+                <input class="form-check-input" type="checkbox" id="useKeycloak" checked>
+                <label class="form-check-label" for="useKeycloak">
+                  Use Keycloak authentication
+                </label>
+              </div>
+            </div>
             <!-- Keycloak Section -->
-            <div class="mb-4 p-3 border rounded">
+            <div class="mb-4 p-3 border rounded" id="keycloakSection">
               <h6 class="mb-3">Keycloak Parameters</h6>
               <div class="row mb-3">
                 <div class="col-4">
@@ -24,7 +33,6 @@
                     type="text"
                     class="form-control"
                     id="loginKeycloakHost"
-                    required
                   />
                 </div>
                 <div class="col-4">
@@ -33,7 +41,6 @@
                     type="text"
                     class="form-control"
                     id="loginKeycloakPort"
-                    required
                   />
                 </div>
                 <div class="col-4">
@@ -42,7 +49,6 @@
                     type="text"
                     class="form-control"
                     id="loginKeycloakRealm"
-                    required
                   />
                 </div>
               </div>
@@ -69,7 +75,6 @@
                     type="text"
                     class="form-control"
                     id="loginKeycloakWebLoginClientId"
-                    required
                   />
                 </div>
               </div>
@@ -137,3 +142,16 @@
     </div>
   </div>
 </div>
+<script>
+// Toggle Keycloak section enabled/disabled
+$(document).ready(function() {
+  $('#useKeycloak').on('change', function() {
+    const enabled = $(this).is(':checked');
+    $('#keycloakSection :input').prop('disabled', !enabled);
+  });
+  // Initial state
+  if (!$('#useKeycloak').is(':checked')) {
+    $('#keycloakSection :input').prop('disabled', true);
+  }
+});
+</script>
