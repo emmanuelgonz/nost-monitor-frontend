@@ -12,8 +12,7 @@ function setUserExchange(exchange) {
 }
 
 async function connect(accessToken) {
-  const RABBITMQ_HOST = process.env.DEFAULT_RABBITMQ_HOST;
-  const RABBITMQ_RELAY_PORT = process.env.DEFAULT_RABBITMQ_RELAY_PORT;
+
   // Use userExchange if set, otherwise fallback to env
   const RABBITMQ_EXCHANGE = userExchange || process.env.DEFAULT_RABBITMQ_EXCHANGE;
   const tls = window.location.protocol === "https:";
