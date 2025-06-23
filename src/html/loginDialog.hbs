@@ -143,21 +143,19 @@
   </div>
 </div>
 
-<!-- Ensure this script runs after jQuery and after the modal markup -->
 <script>
-$(function() {
-  // Debug: log when script runs
-  console.log('Keycloak toggle script loaded');
-  $('#useKeycloak').on('change', function() {
-    if ($(this).is(':checked')) {
-      $('#keycloakSection').slideDown();
+document.addEventListener('DOMContentLoaded', function() {
+  var useKeycloak = document.getElementById('useKeycloak');
+  var keycloakSection = document.getElementById('keycloakSection');
+  function toggleKeycloakSection() {
+    if (useKeycloak.checked) {
+      keycloakSection.style.display = '';
     } else {
-      $('#keycloakSection').slideUp();
+      keycloakSection.style.display = 'none';
     }
-  });
-  // Initial state
-  if (!$('#useKeycloak').is(':checked')) {
-    $('#keycloakSection').hide();
   }
+  useKeycloak.addEventListener('change', toggleKeycloakSection);
+  // Initial state
+  toggleKeycloakSection();
 });
 </script>
