@@ -142,9 +142,12 @@
     </div>
   </div>
 </div>
+
+<!-- Ensure this script runs after jQuery and after the modal markup -->
 <script>
-// Toggle Keycloak section show/hide
-$(document).ready(function() {
+$(function() {
+  // Debug: log when script runs
+  console.log('Keycloak toggle script loaded');
   $('#useKeycloak').on('change', function() {
     if ($(this).is(':checked')) {
       $('#keycloakSection').slideDown();
