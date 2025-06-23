@@ -61,7 +61,7 @@ function startApplication(token, useKeycloak) {
     fetchAccessToken().then(async token => {
       if (token) {
         try {
-          await connect(token); // Wait for broker connection
+          await connect(token, DEFAULT_RABBITMQ_HOST, DEFAULT_RABBITMQ_RELAY_PORT, DEFAULT_RABBITMQ_EXCHANGE); // Wait for broker connection
           startTokenRefresh();
         } catch (err) {
           console.error("Could not connect to broker:", err);
