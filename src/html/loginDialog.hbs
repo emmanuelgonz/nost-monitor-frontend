@@ -143,15 +143,18 @@
   </div>
 </div>
 <script>
-// Toggle Keycloak section enabled/disabled
+// Toggle Keycloak section show/hide
 $(document).ready(function() {
   $('#useKeycloak').on('change', function() {
-    const enabled = $(this).is(':checked');
-    $('#keycloakSection :input').prop('disabled', !enabled);
+    if ($(this).is(':checked')) {
+      $('#keycloakSection').slideDown();
+    } else {
+      $('#keycloakSection').slideUp();
+    }
   });
   // Initial state
   if (!$('#useKeycloak').is(':checked')) {
-    $('#keycloakSection :input').prop('disabled', true);
+    $('#keycloakSection').hide();
   }
 });
 </script>
