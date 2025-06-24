@@ -110,9 +110,9 @@ function showLoginModal() {
     const KeycloakClientId = $('#loginKeycloakClientId').val() || DEFAULT_KEYCLOAK_CLIENT_ID;
     const KeycloakClientSecret = $('#loginKeycloakClientSecret').val() || DEFAULT_KEYCLOAK_CLIENT_SECRET;
     // RabbitMQ
-    const RabbitMQExchange = $('#loginRabbitMQExchange').val() || DEFAULT_RABBITMQ_EXCHANGE;
-    const RabbitMQHost = $('#loginRabbitMQHost').val() || DEFAULT_RABBITMQ_HOST;
-    const RabbitMQPort = $('#loginRabbitMQPort').val() || DEFAULT_RABBITMQ_RELAY_PORT;
+    const RabbitMQExchange = $('#loginRabbitMQExchange').val();
+    const RabbitMQHost = $('#loginRabbitMQHost').val();
+    const RabbitMQPort = $('#loginRabbitMQPort').val();
 
     runtimeConfig = {
       KeycloakHost,
