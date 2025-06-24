@@ -125,8 +125,8 @@ function showLoginModal() {
       const protocol = encrypted ? 'https' : 'http';
       keycloak = new Keycloak({
         url: `${protocol}://${KeycloakHost}:${KeycloakPort}/`,
-        realm: realm,
-        clientId: webLoginClientId,
+        realm: KeycloakRealm,
+        clientId: KeycloakWebLoginClientId,
       });
 
       keycloak
