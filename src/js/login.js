@@ -172,7 +172,7 @@ function checkExistingAuthentication() {
         .init({ onLoad: "check-sso" })
         .then(function (authenticated) {
           if (authenticated) {
-            console.log("User already authenticated.");
+            // console.log("User already authenticated.");
             // Set user exchange if needed
             if (setUserExchange) setUserExchange(keycloakConfig.exchange);
             // onAuthSuccess will handle startApplication
