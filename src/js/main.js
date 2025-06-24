@@ -41,10 +41,7 @@ async function connect(accessToken, RABBITMQ_HOST, RABBITMQ_RELAY_PORT, RABBITMQ
 function updateAmqpToken(newToken) {
   if (amqpConn && typeof amqpConn.updateSecret === "function") {
     amqpConn.updateSecret(newToken);
-    console.log("AMQP token updated via updateSecret.");
-  } else if (amqp && typeof amqp.updateSecret === "function") {
-    amqp.updateSecret(newToken);
-    console.log("AMQP token updated via amqp.updateSecret.");
+    // console.log("AMQP token updated via updateSecret.");
   } else {
     console.warn("AMQP connection not established or updateSecret not available.");
   }
