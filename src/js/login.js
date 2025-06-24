@@ -61,7 +61,7 @@ function startApplication(token, useKeycloak) {
     fetchAccessToken().then(async token => {
       if (token) {
         try {
-          await connect(token, RabbitMQHost, RabbitMQPort, RabbitMQExchange);
+          await connect(token, runtimeConfig.RabbitMQHost, runtimeConfig.RabbitMQPort, runtimeConfig.RabbitMQExchange);
           startTokenRefresh();
         } catch (err) {
           console.error("Could not connect to broker:", err);
@@ -117,7 +117,9 @@ function showLoginModal() {
       KeycloakClientSecret,
       KeycloakWebLoginClientId,
       encrypted,
-      RabbitMQExchange
+      RabbitMQExchange,
+      RabbitMQHost,
+      RabbitMQPort
     };
     
     if (useKeycloak) {
