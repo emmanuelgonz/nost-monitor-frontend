@@ -1,7 +1,7 @@
 import * as bootstrap from "bootstrap";
 import $ from "jquery";
 import Keycloak from "keycloak-js";
-import { connect, updateAmqpToken, setUserExchange } from "./main";
+import { connect, updateAmqpToken } from "./main";
 
 let keycloak = null;
 let keycloakConfig = {};
@@ -115,9 +115,6 @@ function showLoginModal() {
       exchange
     };
     
-    // Set user exchange if needed
-    if (setUserExchange) setUserExchange(exchange);
-    
     if (useKeycloak) {
       // Use https if encrypted, http otherwise
       const protocol = encrypted ? 'https' : 'http';
@@ -172,10 +169,7 @@ function checkExistingAuthentication() {
         .init({ onLoad: "check-sso" })
         .then(function (authenticated) {
           if (authenticated) {
-            // console.log("User already authenticated.");
-            // Set user exchange if needed
-            if (setUserExchange) setUserExchange(keycloakConfig.exchange);
-            // onAuthSuccess will handle startApplication
+            console.log("User already authenticated, starting application.");
           } else {
             console.log("User not authenticated, showing login modal.");
             showLoginModal();

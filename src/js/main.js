@@ -5,11 +5,6 @@ import { AMQPWebSocketClient } from "@cloudamqp/amqp-client";
 let amqpConn = null;
 let amqpChannel = null;
 let amqp = null;
-let userExchange = null;
-
-function setUserExchange(exchange) {
-  userExchange = exchange;
-}
 
 async function connect(accessToken, RABBITMQ_HOST, RABBITMQ_RELAY_PORT, RABBITMQ_EXCHANGE) {
 
@@ -61,4 +56,4 @@ function handleMessage(topic, payload) {
   );
 }
 
-export { amqpConn, amqpChannel, connect, updateAmqpToken, userExchange, setUserExchange };
+export { amqpConn, amqpChannel, connect, updateAmqpToken };
