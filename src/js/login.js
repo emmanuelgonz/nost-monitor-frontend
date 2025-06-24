@@ -61,7 +61,7 @@ function startApplication(token, useKeycloak) {
     fetchAccessToken().then(async token => {
       if (token) {
         try {
-          await connect(token, DEFAULT_RABBITMQ_HOST, DEFAULT_RABBITMQ_RELAY_PORT, DEFAULT_RABBITMQ_EXCHANGE); // Wait for broker connection
+          await connect(token, RabbitMQHost, RabbitMQPort, RabbitMQExchange);
           startTokenRefresh();
         } catch (err) {
           console.error("Could not connect to broker:", err);
@@ -94,16 +94,21 @@ function showLoginModal() {
     $connectBtn.prop('disabled', true); // Disable button to prevent double click
     
     // Get values from modal fields
-    const exchange = $('#loginExchange').val();
-    const host = $('#loginKeycloakHost').val();
-    const port = $('#loginKeycloakPort').val();
-    const realm = $('#loginKeycloakRealm').val();
-    const clientId = $('#loginKeycloakClientId').val() || DEFAULT_KEYCLOAK_CLIENT_ID;
-    const clientSecret = $('#loginKeycloakClientSecret').val() || DEFAULT_KEYCLOAK_CLIENT_SECRET;
-    const webLoginClientId = $('#loginKeycloakWebLoginClientId').val();
+    // General
     const encrypted = $('#loginEncrypted').is(':checked');
     const useKeycloak = $('#useKeycloak').is(':checked');
-    
+    // Keycloak
+    const KeycloakHost = $('#loginKeycloakHost').val();
+    const KeycloakPort = $('#loginKeycloakPort').val();
+    const KeycloakRealm = $('#loginKeycloakRealm').val();
+    const KeycloakWebLoginClientId = $('#loginKeycloakWebLoginClientId').val();
+    const KeycloakClientId = $('#loginKeycloakClientId').val() || DEFAULT_KEYCLOAK_CLIENT_ID;
+    const KeycloakClientSecret = $('#loginKeycloakClientSecret').val() || DEFAULT_KEYCLOAK_CLIENT_SECRET;
+    // RabbitMQ
+    const RabbitMQExchange = $('#loginRabbitMQExchange').val() || DEFAULT_RABBITMQ_EXCHANGE;
+    const RabbitMQHost = $('#loginRabbitMQHost').val() || DEFAULT_RABBITMQ_HOST;
+    const RabbitMQPort = $('#loginRabbitMQPort').val() || DEFAULT_RABBITMQ_RELAY_PORT;
+
     keycloakConfig = {
       host,
       port,
