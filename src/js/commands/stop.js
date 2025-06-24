@@ -1,7 +1,7 @@
 import { TempusDominus } from "@eonasdan/tempus-dominus";
 import $ from "jquery";
 import { convertDateTimeToUTC } from "../utils";
-import { amqpChannel, userExchange } from "../main";
+import { amqpChannel, currentExchange } from "../main";
 
 const stopTime = new TempusDominus(document.getElementById("stopTime"), {
   display: {
@@ -25,7 +25,7 @@ const stopTime = new TempusDominus(document.getElementById("stopTime"), {
 
 $("#stopForm").on("submit", async (e) => {
   e.preventDefault();
-  const RABBITMQ_EXCHANGE = userExchange || process.env.DEFAULT_RABBITMQ_EXCHANGE;
+  const RABBITMQ_EXCHANGE = currentExchange || process.env.DEFAULT_RABBITMQ_EXCHANGE;
   const routingKey = `${RABBITMQ_EXCHANGE}.stop`;
 
   const message = {
