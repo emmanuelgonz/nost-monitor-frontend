@@ -41,7 +41,7 @@ function startTokenRefresh() {
     fetchAccessToken().then(newToken => {
       if (newToken) {
         updateAmqpToken(newToken); // Call update in main.js
-        console.log("Access token refreshed.");
+        // console.log("Access token refreshed.");
       }
     });
   }, 3 * 60 * 1000); // Refresh every 3 minutes
