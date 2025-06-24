@@ -124,11 +124,11 @@ function showLoginModal() {
     
     if (useKeycloak) {
       // Use https if encrypted, http otherwise
-      const protocol = encrypted ? 'https' : 'http';
+      const protocol = runtimeConfig.encrypted ? 'https' : 'http';
       keycloak = new Keycloak({
-        url: `${protocol}://${KeycloakHost}:${KeycloakPort}/`,
-        realm: KeycloakRealm,
-        clientId: KeycloakWebLoginClientId,
+        url: `${protocol}://${runtimeConfig.KeycloakHost}:${runtimeConfig.KeycloakPort}/`,
+        realm: runtimeConfig.KeycloakRealm,
+        clientId: runtimeConfig.KeycloakWebLoginClientId,
       });
 
       keycloak
