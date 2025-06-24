@@ -72,7 +72,7 @@ function startApplication(token, useKeycloak) {
     });
   } else {
     // No Keycloak: connect directly to RabbitMQ
-    connect(null); // Or pass any required params for direct connection
+    connect(null, runtimeConfig.RabbitMQHost, runtimeConfig.RabbitMQPort, runtimeConfig.RabbitMQExchange);
   }
 
   $("#navLogout").on("click", () => {
@@ -86,6 +86,11 @@ function startApplication(token, useKeycloak) {
 function showLoginModal() {
   const loginModal = new bootstrap.Modal(document.getElementById('loginModal'));
   loginModal.show();
+
+  // Fix accessibility issue - remove focus from close button when modal is hidden
+  document.getElementById('loginModal').addEventListener('hidden.bs.modal', function () {
+    document.activeElement.blur();
+  });
 
   $('#loginForm').off('submit').on('submit', function (e) {
     e.preventDefault();
