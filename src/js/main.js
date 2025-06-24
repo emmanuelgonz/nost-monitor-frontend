@@ -5,9 +5,11 @@ import { AMQPWebSocketClient } from "@cloudamqp/amqp-client";
 let amqpConn = null;
 let amqpChannel = null;
 let amqp = null;
+let currentExchange = null; // Add this to store the current exchange
 
 async function connect(accessToken, RABBITMQ_HOST, RABBITMQ_RELAY_PORT, RABBITMQ_EXCHANGE) {
-
+  currentExchange = RABBITMQ_EXCHANGE; // Store the exchange being used
+  
   const tls = window.location.protocol === "https:";
   const url = `${tls ? "wss" : "ws"}://${RABBITMQ_HOST}:${RABBITMQ_RELAY_PORT}`;
 
@@ -56,4 +58,4 @@ function handleMessage(topic, payload) {
   );
 }
 
-export { amqpConn, amqpChannel, connect, updateAmqpToken };
+export { amqpConn, amqpChannel, connect, updateAmqpToken, currentExchange };
