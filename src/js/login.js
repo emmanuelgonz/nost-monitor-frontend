@@ -127,18 +127,12 @@ function showLoginModal() {
         clientId: webLoginClientId,
       });
 
-      // Set up the authentication success event handler before init
-      keycloak.onAuthSuccess = function() {
-        console.log('Authenticated!');
-        startApplication(null, true); // Token will be fetched inside
-      };
-
       keycloak
         .init({ onLoad: "login-required" })
         .then(function (authenticated) {
           if (authenticated) {
             console.log("User authenticated.");
-            // onAuthSuccess will handle startApplication
+            startApplication(null, true); // Token will be fetched inside
           } else {
             console.error("User not authenticated.");
             $connectBtn.prop('disabled', false); // Re-enable on failure
@@ -181,7 +175,7 @@ function checkExistingAuthentication() {
             console.log("User already authenticated.");
             // Set user exchange if needed
             if (setUserExchange) setUserExchange(keycloakConfig.exchange);
-            startApplication(null, true);
+            // onAuthSuccess will handle startApplication
           } else {
             console.log("User not authenticated, showing login modal.");
             showLoginModal();
