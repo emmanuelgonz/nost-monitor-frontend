@@ -4,17 +4,17 @@ import Keycloak from "keycloak-js";
 import { connect, updateAmqpToken } from "./main";
 
 let keycloak = null;
-let keycloakConfig = {};
+let runtimeConfig = {};
 
 function fetchAccessToken() {
-  return fetch(`https://${keycloakConfig.host}:${keycloakConfig.port}/realms/${keycloakConfig.realm}/protocol/openid-connect/token`, {
+  return fetch(`https://${runtimeConfig.KeycloakHost}:${runtimeConfig.KeycloakPort}/realms/${runtimeConfig.KeycloakRealm}/protocol/openid-connect/token`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/x-www-form-urlencoded'
     },
     body: new URLSearchParams({
-      'client_id': keycloakConfig.clientId,
-      'client_secret': keycloakConfig.clientSecret,
+      'client_id': runtimeConfig.KeycloakClientId,
+      'client_secret': runtimeConfig.KeycloakClientSecret,
       'grant_type': 'client_credentials'
     })
   })
@@ -109,22 +109,22 @@ function showLoginModal() {
     const RabbitMQHost = $('#loginRabbitMQHost').val() || DEFAULT_RABBITMQ_HOST;
     const RabbitMQPort = $('#loginRabbitMQPort').val() || DEFAULT_RABBITMQ_RELAY_PORT;
 
-    keycloakConfig = {
-      host,
-      port,
-      realm,
-      clientId,
-      clientSecret,
-      webLoginClientId,
+    runtimeConfig = {
+      KeycloakHost,
+      KeycloakPort,
+      KeycloakRealm,
+      KeycloakClientId,
+      KeycloakClientSecret,
+      KeycloakWebLoginClientId,
       encrypted,
-      exchange
+      RabbitMQExchange
     };
     
     if (useKeycloak) {
       // Use https if encrypted, http otherwise
       const protocol = encrypted ? 'https' : 'http';
       keycloak = new Keycloak({
-        url: `${protocol}://${host}:${port}/`,
+        url: `${protocol}://${KeycloakHost}:${KeycloakPort}/`,
         realm: realm,
         clientId: webLoginClientId,
       });
@@ -153,15 +153,15 @@ function showLoginModal() {
 
 function checkExistingAuthentication() {
   // Check if we have stored keycloak config from previous session
-  const storedConfig = sessionStorage.getItem('keycloakConfig');
+  const storedConfig = sessionStorage.getItem('runtimeConfig');
   if (storedConfig) {
     try {
-      keycloakConfig = JSON.parse(storedConfig);
-      const protocol = keycloakConfig.encrypted ? 'https' : 'http';
+      runtimeConfig = JSON.parse(storedConfig);
+      const protocol = runtimeConfig.encrypted ? 'https' : 'http';
       keycloak = new Keycloak({
-        url: `${protocol}://${keycloakConfig.host}:${keycloakConfig.port}/`,
-        realm: keycloakConfig.realm,
-        clientId: keycloakConfig.webLoginClientId,
+        url: `${protocol}://${runtimeConfig.KeycloakHost}:${runtimeConfig.KeycloakPort}/`,
+        realm: runtimeConfig.KeycloakRealm,
+        clientId: runtimeConfig.KeycloakWebLoginClientId,
       });
 
       // Set up the authentication success event handler
@@ -210,13 +210,15 @@ const DEFAULT_RABBITMQ_RELAY_PORT = process.env.DEFAULT_RABBITMQ_RELAY_PORT || '
 // Initialize application on page load
 $(document).ready(function () {
   // Set default values in modal fields
-  $('#loginExchange').val(DEFAULT_RABBITMQ_EXCHANGE);
+  // Keycloak
   $('#loginKeycloakHost').val(DEFAULT_KEYCLOAK_HOST);
   $('#loginKeycloakPort').val(DEFAULT_KEYCLOAK_PORT);
   $('#loginKeycloakRealm').val(DEFAULT_KEYCLOAK_REALM);
   $('#loginKeycloakWebLoginClientId').val(DEFAULT_KEYCLOAK_WEB_LOGIN_CLIENT_ID);
   $('#loginKeycloakClientId').val();
   $('#loginKeycloakClientSecret').val();
+  //RabbitMQ
+  $('#loginRabbitMQExchange').val(DEFAULT_RABBITMQ_EXCHANGE);
   $('#loginRabbitMQHost').val(DEFAULT_RABBITMQ_HOST);
   $('#loginRabbitMQPort').val(DEFAULT_RABBITMQ_RELAY_PORT);
 
@@ -225,8 +227,8 @@ $(document).ready(function () {
 
   // Store config in session storage when form is submitted
   $(document).on('submit', '#loginForm', function() {
-    if (keycloakConfig && Object.keys(keycloakConfig).length > 0) {
-      sessionStorage.setItem('keycloakConfig', JSON.stringify(keycloakConfig));
+    if (runtimeConfig && Object.keys(runtimeConfig).length > 0) {
+      sessionStorage.setItem('runtimeConfig', JSON.stringify(runtimeConfig));
     }
   });
 });
