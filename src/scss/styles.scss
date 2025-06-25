@@ -25,30 +25,44 @@ header {
 
 #logsPanel {
     width: 33%;
-    position: absolute;
+    position: fixed; /* Changed from absolute to fixed */
     top: 60px; /* Position below navbar */
     left: 0;
     height: calc(100vh - 60px); /* Subtract navbar height */
-    max-height: calc(100vh - 60px); /* Ensure it doesn't exceed viewport */
     z-index: 1000; /* Ensure it's above Cesium */
     background-color: rgba(255, 255, 255, 0.9);
-    overflow-y: auto;
-    overflow-x: hidden; /* Prevent horizontal scrolling */
+    overflow-y: scroll; /* Changed to scroll to force scrollbar */
+    overflow-x: hidden;
     box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
-    box-sizing: border-box; /* Include padding/border in size calculations */
+    box-sizing: border-box;
+    display: block; /* Ensure it's visible */
+}
+
+/* Handle Bootstrap collapse states */
+#logsPanel.collapse {
+    display: block; /* Override Bootstrap collapse display */
+}
+
+#logsPanel.collapse:not(.show) {
+    display: none; /* Hide when collapsed */
+}
+
+#logsPanel.collapse.show {
+    display: block; /* Show when expanded */
 }
 
 /* Ensure content inside logs panel is properly contained */
 #logsPanel * {
     box-sizing: border-box;
-    max-width: 100%;
 }
 
-/* If you have specific content containers inside logsPanel */
-#logsPanel .log-content {
+/* Content wrapper inside logs panel */
+#logsPanel .log-content,
+#logsPanel > div {
     padding: 10px;
     word-wrap: break-word;
     overflow-wrap: break-word;
+    height: auto;
 }
 
 #cesiumContainer {
