@@ -15,4 +15,9 @@ Ion.defaultAccessToken = process.env.CESIUM_TOKEN;
 // });
 const viewer = new Viewer('cesiumContainer');
 
+// Handle window resize
+window.addEventListener('resize', () => {
+  viewer.resize();
+});
+
 export { viewer };
