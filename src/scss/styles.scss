@@ -38,10 +38,11 @@ header {
 }
 
 #cesiumContainer {
-  width: 100vw;
-  height: calc(100vh - 60px); /* Subtract navbar height */
-  margin: 0;
-  padding: 0;
+    width: 100%;
+//   width: 100vw;
+//   height: calc(100vh - 60px); /* Subtract navbar height */
+//   margin: 0;
+//   padding: 0;
 //   overflow: hidden;
 //   position: absolute;
 //   top: 60px; /* Position below navbar */
