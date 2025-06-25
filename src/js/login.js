@@ -95,8 +95,8 @@ function showLoginModal() {
   $('#loginForm').off('submit').on('submit', function (e) {
     e.preventDefault();
     loginModal.hide(); // Hide the modal immediately on submit
-    const $connectBtn = $('#loginConnect');
-    $connectBtn.prop('disabled', true); // Disable button to prevent double click
+    // const $connectBtn = $('#loginConnect');
+    // $connectBtn.prop('disabled', true); // Disable button to prevent double click
     
     // Get values from modal fields
     // General
@@ -144,12 +144,12 @@ function showLoginModal() {
             startApplication(null, true); // Token will be fetched inside
           } else {
             console.error("User not authenticated.");
-            $connectBtn.prop('disabled', false); // Re-enable on failure
+            // $connectBtn.prop('disabled', false); // Re-enable on failure
           }
         })
         .catch(function (error) {
           console.error("Keycloak initialization failed:", error);
-          $connectBtn.prop('disabled', false); // Re-enable on error
+          // $connectBtn.prop('disabled', false); // Re-enable on error
         });
     } else {
       // No Keycloak: connect directly
