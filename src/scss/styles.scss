@@ -10,8 +10,8 @@
 #logsPanel {
     width: 33%;
     max-width: 100vw;
-    max-height: 100vh; // Add this line
+    height: 100vh; // Changed from max-height to height
     box-sizing: border-box;
-    overflow-x: auto; // Optional: adds scroll if content overflows horizontally
-    overflow-y: auto; // Add this line for vertical scrolling
+    overflow-x: auto;
+    overflow-y: auto;
 }
