@@ -29,10 +29,26 @@ header {
     top: 60px; /* Position below navbar */
     left: 0;
     height: calc(100vh - 60px); /* Subtract navbar height */
+    max-height: calc(100vh - 60px); /* Ensure it doesn't exceed viewport */
     z-index: 1000; /* Ensure it's above Cesium */
     background-color: rgba(255, 255, 255, 0.9);
     overflow-y: auto;
+    overflow-x: hidden; /* Prevent horizontal scrolling */
     box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+    box-sizing: border-box; /* Include padding/border in size calculations */
+}
+
+/* Ensure content inside logs panel is properly contained */
+#logsPanel * {
+    box-sizing: border-box;
+    max-width: 100%;
+}
+
+/* If you have specific content containers inside logsPanel */
+#logsPanel .log-content {
+    padding: 10px;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
 }
 
 #cesiumContainer {
