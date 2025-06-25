@@ -5,13 +5,14 @@ import "cesium/Build/Cesium/Widgets/widgets.css";
 Ion.defaultAccessToken = process.env.CESIUM_TOKEN;
 
 // initialize cesium viewer
-const viewer = new Viewer("cesiumContainer", {
-  terrain: Terrain.fromWorldTerrain(),
-  baseLayerPicker: false,
-  geocoder: false,
-  homeButton: false,
-  sceneModePicker: false,
-  navigationHelpButton: false,
-});
+// const viewer = new Viewer("cesiumContainer", {
+//   terrain: Terrain.fromWorldTerrain(),
+//   baseLayerPicker: false,
+//   geocoder: false,
+//   homeButton: false,
+//   sceneModePicker: false,
+//   navigationHelpButton: false,
+// });
+const viewer = new Cesium.Viewer('cesiumContainer');
 
 export { viewer };
