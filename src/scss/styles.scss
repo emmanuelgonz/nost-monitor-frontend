@@ -7,18 +7,44 @@
 
 @import "highlight.js/scss/default.scss";
 
+// Prevent page overflow
+html, body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+}
+
+// Fix navbar positioning
+header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1050; /* Bootstrap's navbar z-index */
+  height: 60px; /* Set explicit height */
+}
+
 #logsPanel {
     width: 33%;
+    position: absolute;
+    top: 60px; /* Position below navbar */
+    left: 0;
+    height: calc(100vh - 60px); /* Subtract navbar height */
+    z-index: 1000; /* Ensure it's above Cesium */
+    background-color: rgba(255, 255, 255, 0.9);
+    overflow-y: auto;
+    box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
 }
 
 #cesiumContainer {
-  width: 95%;
-  height: 95%;
+  width: 100vw;
+  height: calc(100vh - 60px); /* Subtract navbar height */
   margin: 0;
   padding: 0;
-//   overflow: hidden;
-//   position: absolute;
-//   top: 60px; /* Position below navbar */
-//   left: 0;
-//   z-index: 1; /* Lower z-index than logs panel */
+  overflow: hidden;
+  position: absolute;
+  top: 60px; /* Position below navbar */
+  left: 0;
+  z-index: 1; /* Lower z-index than logs panel */
 }
