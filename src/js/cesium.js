@@ -13,6 +13,6 @@ Ion.defaultAccessToken = process.env.CESIUM_TOKEN;
 //   sceneModePicker: false,
 //   navigationHelpButton: false,
 // });
-const viewer = new Cesium.Viewer('cesiumContainer');
+const viewer = new Viewer('cesiumContainer');
 
 export { viewer };
