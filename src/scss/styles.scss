@@ -9,22 +9,15 @@
 
 #logsPanel {
     width: 33%;
-    height: calc(100vh - 60px); /* Match the available height below navbar */
-    position: absolute;
-    top: 60px; /* Position below navbar */
-    right: 0; /* Position on the right side */
-    overflow-y: auto; /* Allow scrolling within the panel if content overflows */
-    z-index: 1000; /* Ensure it appears above Cesium */
-    background-color: rgba(255, 255, 255, 0.9); /* Optional: semi-transparent background */
 }
 
 #cesiumContainer {
-    width: 67%; /* Take remaining width (100% - 33% for logs panel) */
-    height: calc(100vh - 60px); /* Subtract navbar height */
-    margin: 0;
-    padding: 0;
-    overflow: hidden;
-    position: absolute;
-    top: 60px; /* Position below navbar */
-    left: 0; /* Position on the left side */
+  width: 100vw;
+  height: calc(100vh - 60px); /* Subtract navbar height */
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  position: absolute;
+  top: 60px; /* Position below navbar */
+  left: 0;
 }
