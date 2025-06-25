@@ -40,8 +40,7 @@ function startTokenRefresh() {
   setInterval(() => {
     fetchAccessToken().then(newToken => {
       if (newToken) {
-        updateAmqpToken(newToken); // Call update in main.js
-        // console.log("Access token refreshed.");
+        updateAmqpToken(newToken);
       }
     });
   }, 3 * 60 * 1000); // Refresh every 3 minutes
@@ -87,16 +86,13 @@ function showLoginModal() {
   const loginModal = new bootstrap.Modal(document.getElementById('loginModal'));
   loginModal.show();
 
-  // Fix accessibility issue - remove focus from close button when modal is hidden
   document.getElementById('loginModal').addEventListener('hidden.bs.modal', function () {
     document.activeElement.blur();
   });
 
   $('#loginForm').off('submit').on('submit', function (e) {
     e.preventDefault();
-    loginModal.hide(); // Hide the modal immediately on submit
-    // const $connectBtn = $('#loginConnect');
-    // $connectBtn.prop('disabled', true); // Disable button to prevent double click
+    loginModal.hide();
     
     // Get values from modal fields
     // General
@@ -128,7 +124,6 @@ function showLoginModal() {
     };
     
     if (useKeycloak) {
-      // Use https if encrypted, http otherwise
       const protocol = runtimeConfig.encrypted ? 'https' : 'http';
       keycloak = new Keycloak({
         url: `${protocol}://${runtimeConfig.KeycloakHost}:${runtimeConfig.KeycloakPort}/`,
@@ -141,15 +136,13 @@ function showLoginModal() {
         .then(function (authenticated) {
           if (authenticated) {
             console.log("User authenticated.");
-            startApplication(null, true); // Token will be fetched inside
+            startApplication(null, true);
           } else {
             console.error("User not authenticated.");
-            // $connectBtn.prop('disabled', false); // Re-enable on failure
           }
         })
         .catch(function (error) {
           console.error("Keycloak initialization failed:", error);
-          // $connectBtn.prop('disabled', false); // Re-enable on error
         });
     } else {
       // No Keycloak: connect directly
