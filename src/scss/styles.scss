@@ -13,12 +13,12 @@
 
 #cesiumContainer {
   width: 100%;
-  height: calc(100vh - 60px); /* Subtract navbar height */
+  height: 100%;
   margin: 0;
   padding: 0;
-  overflow: hidden;
-  position: absolute;
-  top: 60px; /* Position below navbar */
-  left: 0;
-  z-index: 1; /* Lower z-index than logs panel */
+//   overflow: hidden;
+//   position: absolute;
+//   top: 60px; /* Position below navbar */
+//   left: 0;
+//   z-index: 1; /* Lower z-index than logs panel */
 }
