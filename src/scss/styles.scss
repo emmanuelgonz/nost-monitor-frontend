@@ -9,4 +9,7 @@
 
 #logsPanel {
     width: 33%;
+    max-width: 100vw;
+    box-sizing: border-box;
+    overflow-x: auto; // Optional: adds scroll if content overflows
 }
