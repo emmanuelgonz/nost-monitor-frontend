@@ -60,7 +60,7 @@ function showLoginModal() {
     // Get values from modal fields
     // General
     const encrypted = $('#loginEncrypted').is(':checked');
-    const useKeycloak = $('#useKeycloak').is(':checked');
+    const useKeycloak = process.env.NODE_ENV === "production" || $('#useKeycloak').is(':checked');
     // Keycloak
     const KeycloakHost = $('#loginKeycloakHost').val();
     const KeycloakPort = $('#loginKeycloakPort').val();
@@ -176,6 +176,23 @@ $(document).ready(function () {
   $('#loginRabbitMQExchange').val(DEFAULT_RABBITMQ_EXCHANGE);
   $('#loginRabbitMQHost').val(DEFAULT_RABBITMQ_HOST);
   $('#loginRabbitMQPort').val(DEFAULT_RABBITMQ_RELAY_PORT);
+
+  // Keycloak section toggle (within advanced settings)
+  $('#useKeycloak').on('change', function () {
+    $('#keycloakSection').toggle(this.checked);
+  });
+  $('#keycloakSection').toggle($('#useKeycloak').is(':checked'));
+
+  // Advanced settings toggle (dev builds only)
+  if (process.env.NODE_ENV !== "production") {
+    $('#advancedToggle').show();
+    $('#advancedToggleLink').on('click', function (e) {
+      e.preventDefault();
+      var isHidden = $('#advancedSettings').is(':hidden');
+      $('#advancedSettings').toggle();
+      $('#advancedToggleIcon').attr('class', isHidden ? 'bi bi-chevron-down' : 'bi bi-chevron-right');
+    });
+  }
 
   // Check for existing authentication first
   checkExistingAuthentication();

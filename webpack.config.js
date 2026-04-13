@@ -108,8 +108,9 @@ module.exports = {
     new webpack.DefinePlugin({
       // Define relative base path in cesium for loading assets
       CESIUM_BASE_URL: JSON.stringify(cesiumBaseUrl),
+      "process.env.NODE_ENV": JSON.stringify(process.env.NODE_ENV || "development"),
     }),
-    new Dotenv(),
+    new Dotenv({ systemvars: true }),
     new webpack.ProvidePlugin({
       $: "jquery",
       jQuery: "jquery",
