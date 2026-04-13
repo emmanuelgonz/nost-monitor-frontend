@@ -115,6 +115,6 @@ module.exports = {
       jQuery: "jquery",
     }),
   ],
-  mode: "development",
-  devtool: "eval",
+  mode: process.env.NODE_ENV === "production" ? "production" : "development",
+  devtool: process.env.NODE_ENV === "production" ? false : "eval",
 };

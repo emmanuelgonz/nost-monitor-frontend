@@ -6,47 +6,7 @@ import { connect, updateAmqpToken } from "./main";
 let keycloak = null;
 let runtimeConfig = {};
 
-function fetchAccessToken() {
-  return fetch(`https://${runtimeConfig.KeycloakHost}:${runtimeConfig.KeycloakPort}/realms/${runtimeConfig.KeycloakRealm}/protocol/openid-connect/token`, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/x-www-form-urlencoded'
-    },
-    body: new URLSearchParams({
-      'client_id': runtimeConfig.KeycloakClientId,
-      'client_secret': runtimeConfig.KeycloakClientSecret,
-      'grant_type': 'client_credentials'
-    })
-  })
-    .then(response => {
-      if (response.ok) {
-        return response.json();
-      } else {
-        return response.text().then(text => {
-          console.error("Failed to obtain access token:", text);
-          throw new Error('Failed to obtain access token');
-        });
-      }
-    })
-    .then(data => {
-      return data.access_token;
-    })
-    .catch(error => {
-      console.error(error);
-    });
-}
-
-function startTokenRefresh() {
-  setInterval(() => {
-    fetchAccessToken().then(newToken => {
-      if (newToken) {
-        updateAmqpToken(newToken);
-      }
-    });
-  }, 3 * 60 * 1000); // Refresh every 3 minutes
-}
-
-function startApplication(token, useKeycloak) {
+function startApplication(useKeycloak) {
   $("#navLogin").hide();
   if (useKeycloak && keycloak && keycloak.tokenParsed) {
     $("#navLogout")
@@ -57,18 +17,21 @@ function startApplication(token, useKeycloak) {
   }
 
   if (useKeycloak) {
-    fetchAccessToken().then(async token => {
-      if (token) {
-        try {
-          await connect(token, runtimeConfig.RabbitMQHost, runtimeConfig.RabbitMQPort, runtimeConfig.RabbitMQExchange);
-          startTokenRefresh();
-        } catch (err) {
-          console.error("Could not connect to broker:", err);
-        }
-      } else {
-        console.error("Could not fetch AMQP access token.");
-      }
-    });
+    connect(keycloak.token, runtimeConfig.RabbitMQHost, runtimeConfig.RabbitMQPort, runtimeConfig.RabbitMQExchange)
+      .then(() => {
+        keycloak.onTokenExpired = () => {
+          keycloak.updateToken(30).then((refreshed) => {
+            if (refreshed) {
+              updateAmqpToken(keycloak.token);
+            }
+          }).catch((err) => {
+            console.error("Failed to refresh Keycloak token:", err);
+          });
+        };
+      })
+      .catch((err) => {
+        console.error("Could not connect to broker:", err);
+      });
   } else {
     // No Keycloak: connect directly to RabbitMQ
     connect(null, runtimeConfig.RabbitMQHost, runtimeConfig.RabbitMQPort, runtimeConfig.RabbitMQExchange);
@@ -103,8 +66,6 @@ function showLoginModal() {
     const KeycloakPort = $('#loginKeycloakPort').val();
     const KeycloakRealm = $('#loginKeycloakRealm').val();
     const KeycloakWebLoginClientId = $('#loginKeycloakWebLoginClientId').val();
-    const KeycloakClientId = $('#loginKeycloakClientId').val() || DEFAULT_KEYCLOAK_CLIENT_ID;
-    const KeycloakClientSecret = $('#loginKeycloakClientSecret').val() || DEFAULT_KEYCLOAK_CLIENT_SECRET;
     // RabbitMQ
     const RabbitMQExchange = $('#loginRabbitMQExchange').val();
     const RabbitMQHost = $('#loginRabbitMQHost').val();
@@ -114,8 +75,6 @@ function showLoginModal() {
       KeycloakHost,
       KeycloakPort,
       KeycloakRealm,
-      KeycloakClientId,
-      KeycloakClientSecret,
       KeycloakWebLoginClientId,
       encrypted,
       RabbitMQExchange,
@@ -136,7 +95,7 @@ function showLoginModal() {
         .then(function (authenticated) {
           if (authenticated) {
             console.log("User authenticated.");
-            startApplication(null, true);
+            startApplication(true);
           } else {
             console.error("User not authenticated.");
           }
@@ -146,7 +105,7 @@ function showLoginModal() {
         });
     } else {
       // No Keycloak: connect directly
-      startApplication(null, false);
+      startApplication(false);
     }
   });
 }
@@ -167,7 +126,7 @@ function checkExistingAuthentication() {
       // Set up the authentication success event handler
       keycloak.onAuthSuccess = function() {
         console.log('Authenticated!');
-        startApplication(null, true);
+        startApplication(true);
       };
 
       keycloak
@@ -200,8 +159,6 @@ const DEFAULT_KEYCLOAK_HOST = process.env.DEFAULT_KEYCLOAK_HOST || '';
 const DEFAULT_KEYCLOAK_PORT = process.env.DEFAULT_KEYCLOAK_PORT || '';
 const DEFAULT_KEYCLOAK_REALM = process.env.DEFAULT_KEYCLOAK_REALM || '';
 const DEFAULT_KEYCLOAK_WEB_LOGIN_CLIENT_ID = process.env.DEFAULT_KEYCLOAK_WEB_LOGIN_CLIENT_ID || '';
-const DEFAULT_KEYCLOAK_CLIENT_ID = process.env.DEFAULT_KEYCLOAK_CLIENT_ID || '';
-const DEFAULT_KEYCLOAK_CLIENT_SECRET = process.env.DEFAULT_KEYCLOAK_CLIENT_SECRET || '';
 // RabbitMQ
 const DEFAULT_RABBITMQ_EXCHANGE = process.env.DEFAULT_RABBITMQ_EXCHANGE || '';
 const DEFAULT_RABBITMQ_HOST = process.env.DEFAULT_RABBITMQ_HOST || '';
@@ -215,8 +172,6 @@ $(document).ready(function () {
   $('#loginKeycloakPort').val(DEFAULT_KEYCLOAK_PORT);
   $('#loginKeycloakRealm').val(DEFAULT_KEYCLOAK_REALM);
   $('#loginKeycloakWebLoginClientId').val(DEFAULT_KEYCLOAK_WEB_LOGIN_CLIENT_ID);
-  $('#loginKeycloakClientId').val();
-  $('#loginKeycloakClientSecret').val();
   //RabbitMQ
   $('#loginRabbitMQExchange').val(DEFAULT_RABBITMQ_EXCHANGE);
   $('#loginRabbitMQHost').val(DEFAULT_RABBITMQ_HOST);
