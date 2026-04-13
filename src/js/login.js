@@ -56,18 +56,20 @@ function showLoginModal() {
   $('#loginForm').off('submit').on('submit', function (e) {
     e.preventDefault();
     loginModal.hide();
-    
-    // Get values from modal fields
-    // General
+
+    runtimeConfig.RabbitMQExchange = $('#loginRabbitMQExchange').val();
+
+    if (keycloak && keycloak.authenticated) {
+      startApplication(true);
+      return;
+    }
+
     const encrypted = $('#loginEncrypted').is(':checked');
-    const useKeycloak = process.env.NODE_ENV === "production" || $('#useKeycloak').is(':checked');
-    // Keycloak
+    const useKeycloak = $('#useKeycloak').is(':checked');
     const KeycloakHost = $('#loginKeycloakHost').val();
     const KeycloakPort = $('#loginKeycloakPort').val();
     const KeycloakRealm = $('#loginKeycloakRealm').val();
     const KeycloakWebLoginClientId = $('#loginKeycloakWebLoginClientId').val();
-    // RabbitMQ
-    const RabbitMQExchange = $('#loginRabbitMQExchange').val();
     const RabbitMQHost = $('#loginRabbitMQHost').val();
     const RabbitMQPort = $('#loginRabbitMQPort').val();
 
@@ -77,11 +79,11 @@ function showLoginModal() {
       KeycloakRealm,
       KeycloakWebLoginClientId,
       encrypted,
-      RabbitMQExchange,
+      RabbitMQExchange: runtimeConfig.RabbitMQExchange,
       RabbitMQHost,
       RabbitMQPort
     };
-    
+
     if (useKeycloak) {
       const protocol = runtimeConfig.encrypted ? 'https' : 'http';
       keycloak = new Keycloak({
@@ -94,7 +96,6 @@ function showLoginModal() {
         .init({ onLoad: "login-required" })
         .then(function (authenticated) {
           if (authenticated) {
-            console.log("User authenticated.");
             startApplication(true);
           } else {
             console.error("User not authenticated.");
@@ -104,7 +105,6 @@ function showLoginModal() {
           console.error("Keycloak initialization failed:", error);
         });
     } else {
-      // No Keycloak: connect directly
       startApplication(false);
     }
   });
@@ -194,13 +194,44 @@ $(document).ready(function () {
     });
   }
 
-  // Check for existing authentication first
-  checkExistingAuthentication();
+  if (process.env.NODE_ENV === "production") {
+    runtimeConfig = {
+      KeycloakHost: DEFAULT_KEYCLOAK_HOST,
+      KeycloakPort: DEFAULT_KEYCLOAK_PORT,
+      KeycloakRealm: DEFAULT_KEYCLOAK_REALM,
+      KeycloakWebLoginClientId: DEFAULT_KEYCLOAK_WEB_LOGIN_CLIENT_ID,
+      encrypted: true,
+      RabbitMQHost: DEFAULT_RABBITMQ_HOST,
+      RabbitMQPort: DEFAULT_RABBITMQ_RELAY_PORT,
+      RabbitMQExchange: sessionStorage.getItem('rabbitmqExchange') || DEFAULT_RABBITMQ_EXCHANGE,
+    };
 
-  // Store config in session storage when form is submitted
+    keycloak = new Keycloak({
+      url: `https://${runtimeConfig.KeycloakHost}:${runtimeConfig.KeycloakPort}/`,
+      realm: runtimeConfig.KeycloakRealm,
+      clientId: runtimeConfig.KeycloakWebLoginClientId,
+    });
+
+    keycloak.init({ onLoad: "login-required" })
+      .then(function (authenticated) {
+        if (authenticated) {
+          $('#loginRabbitMQExchange').val(runtimeConfig.RabbitMQExchange);
+          showLoginModal();
+        }
+      })
+      .catch(function (error) {
+        console.error("Keycloak initialization failed:", error);
+      });
+  } else {
+    checkExistingAuthentication();
+  }
+
   $(document).on('submit', '#loginForm', function() {
     if (runtimeConfig && Object.keys(runtimeConfig).length > 0) {
       sessionStorage.setItem('runtimeConfig', JSON.stringify(runtimeConfig));
+    }
+    if (runtimeConfig.RabbitMQExchange) {
+      sessionStorage.setItem('rabbitmqExchange', runtimeConfig.RabbitMQExchange);
     }
   });
 });
