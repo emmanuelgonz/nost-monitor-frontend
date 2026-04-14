@@ -45,17 +45,12 @@ function updateAmqpToken(newToken) {
 }
 
 function handleMessage(topic, payload) {
-  $("#logsContainer").prepend(
-    $(
-      '<div class="card"><div class="card-body"><h5 class="card-title">' +
-        new Date().toISOString() +
-        '</h5><h6 class="card-subtitle text-muted">' +
-        topic +
-        '</h6><p class="card-text font-monospace">' +
-        JSON.stringify(payload) +
-        "</p></div></div>"
-    )
-  );
+  const card = $('<div class="card"></div>');
+  const body = $('<div class="card-body"></div>').appendTo(card);
+  $('<h5 class="card-title"></h5>').text(new Date().toISOString()).appendTo(body);
+  $('<h6 class="card-subtitle text-muted"></h6>').text(topic).appendTo(body);
+  $('<p class="card-text font-monospace"></p>').text(JSON.stringify(payload)).appendTo(body);
+  $("#logsContainer").prepend(card);
 }
 
 export { amqpConn, amqpChannel, connect, updateAmqpToken, currentExchange };
