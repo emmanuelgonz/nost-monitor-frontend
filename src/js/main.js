@@ -53,4 +53,4 @@ function handleMessage(topic, payload) {
   $("#logsContainer").prepend(card);
 }
 
-export { amqpConn, amqpChannel, connect, updateAmqpToken, currentExchange };
+export { amqpConn, connect, updateAmqpToken, currentExchange };
