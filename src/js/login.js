@@ -6,6 +6,10 @@ import { connect, updateAmqpToken } from "./main";
 let keycloak = null;
 let runtimeConfig = {};
 
+export function getKeycloak() {
+  return keycloak;
+}
+
 function startApplication(useKeycloak) {
   $("#navLogin").hide();
   if (useKeycloak && keycloak && keycloak.tokenParsed) {
