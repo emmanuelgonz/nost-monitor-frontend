@@ -6,6 +6,7 @@ import { stopTime } from "./stop";
 import { updateTime } from "./update";
 import { currentExchange } from "../main";
 import { apiPost } from "../api";
+import { showError, showSuccess } from "../notify";
 
 const initializeInterval = new TempusDominus(
   document.getElementById("initializeInterval"),
@@ -53,8 +54,11 @@ $("#initializeForm").on("submit", async (e) => {
   try {
     await apiPost(`/init/${prefix}`, body);
     console.log("Initialize command sent:", body);
+    showSuccess(`Initialize command sent for '${prefix}'.`);
   } catch (err) {
     console.error("Failed to send initialize command:", err);
+    showError(`Initialize failed: ${err.message}`);
+    return;
   }
 
   startInterval.updateOptions({

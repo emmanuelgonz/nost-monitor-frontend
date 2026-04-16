@@ -25,8 +25,17 @@ export async function apiPost(path, body) {
   });
 
   if (!res.ok) {
-    const detail = await res.text();
-    throw new Error(`API ${res.status}: ${detail}`);
+    const raw = await res.text();
+    let detail = raw;
+    try {
+      const body = JSON.parse(raw);
+      if (body && body.detail) detail = body.detail;
+    } catch {
+      // raw wasn't JSON; keep as-is
+    }
+    const err = new Error(detail || `Request failed (${res.status})`);
+    err.status = res.status;
+    throw err;
   }
   if (res.status === 202) return { accepted: true };
   try {

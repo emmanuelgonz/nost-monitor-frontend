@@ -3,6 +3,7 @@ import $ from "jquery";
 import { convertDateTimeToUTC } from "../utils";
 import { currentExchange } from "../main";
 import { apiPost } from "../api";
+import { showError, showSuccess } from "../notify";
 
 const stopTime = new TempusDominus(document.getElementById("stopTime"), {
   display: {
@@ -35,8 +36,10 @@ $("#stopForm").on("submit", async (e) => {
   try {
     await apiPost(`/stop/${prefix}`, body);
     console.log("Stop command sent:", body);
+    showSuccess(`Stop command sent for '${prefix}'.`);
   } catch (err) {
     console.error("Failed to send stop command:", err);
+    showError(`Stop failed: ${err.message}`);
   }
 });
 

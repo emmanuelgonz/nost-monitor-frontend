@@ -3,6 +3,7 @@ import $ from "jquery";
 import { convertDateTimeToUTC } from "../utils";
 import { currentExchange } from "../main";
 import { apiPost } from "../api";
+import { showError, showSuccess } from "../notify";
 
 const updateTime = new TempusDominus(document.getElementById("updateTime"), {
   display: {
@@ -29,7 +30,7 @@ $("#updateForm").on("submit", async (e) => {
   const prefix = currentExchange || process.env.DEFAULT_RABBITMQ_EXCHANGE;
 
   if (!$("#updateTimeScale").val()) {
-    console.warn("Update command requires a time scale factor.");
+    showError("Update command requires a time scale factor.");
     return;
   }
 
@@ -41,8 +42,10 @@ $("#updateForm").on("submit", async (e) => {
   try {
     await apiPost(`/update/${prefix}`, body);
     console.log("Update command sent:", body);
+    showSuccess(`Update command sent for '${prefix}'.`);
   } catch (err) {
     console.error("Failed to send update command:", err);
+    showError(`Update failed: ${err.message}`);
   }
 });
 

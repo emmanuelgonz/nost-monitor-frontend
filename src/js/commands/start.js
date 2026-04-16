@@ -3,6 +3,7 @@ import $ from "jquery";
 import { convertDateTimeToUTC } from "../utils";
 import { currentExchange } from "../main";
 import { apiPost } from "../api";
+import { showError, showSuccess } from "../notify";
 
 const startInterval = new TempusDominus(
   document.getElementById("startInterval"),
@@ -71,8 +72,10 @@ $("#startForm").on("submit", async (e) => {
   try {
     await apiPost(`/start/${prefix}`, body);
     console.log("Start command sent:", body);
+    showSuccess(`Start command sent for '${prefix}'.`);
   } catch (err) {
     console.error("Failed to send start command:", err);
+    showError(`Start failed: ${err.message}`);
   }
 });
 
