@@ -1,7 +1,8 @@
 import { TempusDominus } from "@eonasdan/tempus-dominus";
 import $ from "jquery";
 import { convertDateTimeToUTC } from "../utils";
-import { amqpChannel, currentExchange } from "../main";
+import { currentExchange } from "../main";
+import { apiPost } from "../api";
 
 const updateTime = new TempusDominus(document.getElementById("updateTime"), {
   display: {
@@ -25,33 +26,23 @@ const updateTime = new TempusDominus(document.getElementById("updateTime"), {
 
 $("#updateForm").on("submit", async (e) => {
   e.preventDefault();
-  const RABBITMQ_EXCHANGE = currentExchange || process.env.DEFAULT_RABBITMQ_EXCHANGE;
-  const routingKey = `${RABBITMQ_EXCHANGE}.update`;
+  const prefix = currentExchange || process.env.DEFAULT_RABBITMQ_EXCHANGE;
 
-  const message = {
-    tasking_parameters: {
-      sim_update_time: convertDateTimeToUTC(
-        updateTime.dates.lastPicked,
-      ).toISOString(),
-      time_scaling_factor: $("#updateTimeScale").val()
-        ? Number.parseFloat($("#updateTimeScale").val())
-        : null,
-    },
+  if (!$("#updateTimeScale").val()) {
+    console.warn("Update command requires a time scale factor.");
+    return;
+  }
+
+  const body = {
+    timeScaleFactor: Number.parseFloat($("#updateTimeScale").val()),
+    simUpdateTime: convertDateTimeToUTC(updateTime.dates.lastPicked).toISOString(),
   };
 
-  if (amqpChannel) {
-    try {
-      await amqpChannel.basicPublish(
-        RABBITMQ_EXCHANGE,
-        routingKey,
-        JSON.stringify(message)
-      );
-      console.log("Update command sent:", message);
-    } catch (err) {
-      console.error("Failed to send update command:", err);
-    }
-  } else {
-    console.warn("AMQP channel not ready.");
+  try {
+    await apiPost(`/update/${prefix}`, body);
+    console.log("Update command sent:", body);
+  } catch (err) {
+    console.error("Failed to send update command:", err);
   }
 });
 
