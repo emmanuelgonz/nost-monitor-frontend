@@ -97,7 +97,7 @@ function showLoginModal() {
       });
 
       keycloak
-        .init({ onLoad: "login-required" })
+        .init({ onLoad: "login-required", checkLoginIframe: false })
         .then(function (authenticated) {
           if (authenticated) {
             startApplication(true);
@@ -134,7 +134,7 @@ function checkExistingAuthentication() {
       };
 
       keycloak
-        .init({ onLoad: "check-sso" })
+        .init({ onLoad: "check-sso", checkLoginIframe: false })
         .then(function (authenticated) {
           if (authenticated) {
             console.log("User already authenticated, starting application.");
@@ -216,7 +216,7 @@ $(document).ready(function () {
       clientId: runtimeConfig.KeycloakWebLoginClientId,
     });
 
-    keycloak.init({ onLoad: "login-required" })
+    keycloak.init({ onLoad: "login-required", checkLoginIframe: false })
       .then(function (authenticated) {
         if (authenticated) {
           $('#loginRabbitMQExchange').val(runtimeConfig.RabbitMQExchange);
