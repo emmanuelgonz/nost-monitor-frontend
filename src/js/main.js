@@ -5,17 +5,11 @@ import { AMQPWebSocketClient } from "@cloudamqp/amqp-client";
 let amqpConn = null;
 let amqpChannel = null;
 let amqp = null;
-let userExchange = null;
+let currentExchange = null; // Add this to store the current exchange
 
-function setUserExchange(exchange) {
-  userExchange = exchange;
-}
-
-async function connect(accessToken) {
-  const RABBITMQ_HOST = process.env.DEFAULT_RABBITMQ_HOST;
-  const RABBITMQ_RELAY_PORT = process.env.DEFAULT_RABBITMQ_RELAY_PORT;
-  // Use userExchange if set, otherwise fallback to env
-  const RABBITMQ_EXCHANGE = userExchange || process.env.DEFAULT_RABBITMQ_EXCHANGE;
+async function connect(accessToken, RABBITMQ_HOST, RABBITMQ_RELAY_PORT, RABBITMQ_EXCHANGE) {
+  currentExchange = RABBITMQ_EXCHANGE; // Store the exchange being used
+  
   const tls = window.location.protocol === "https:";
   const url = `${tls ? "wss" : "ws"}://${RABBITMQ_HOST}:${RABBITMQ_RELAY_PORT}`;
 
@@ -44,27 +38,19 @@ async function connect(accessToken) {
 function updateAmqpToken(newToken) {
   if (amqpConn && typeof amqpConn.updateSecret === "function") {
     amqpConn.updateSecret(newToken);
-    console.log("AMQP token updated via updateSecret.");
-  } else if (amqp && typeof amqp.updateSecret === "function") {
-    amqp.updateSecret(newToken);
-    console.log("AMQP token updated via amqp.updateSecret.");
+    // console.log("AMQP token updated via updateSecret.");
   } else {
     console.warn("AMQP connection not established or updateSecret not available.");
   }
 }
 
 function handleMessage(topic, payload) {
-  $("#logsContainer").prepend(
-    $(
-      '<div class="card"><div class="card-body"><h5 class="card-title">' +
-        new Date().toISOString() +
-        '</h5><h6 class="card-subtitle text-muted">' +
-        topic +
-        '</h6><p class="card-text font-monospace">' +
-        JSON.stringify(payload) +
-        "</p></div></div>"
-    )
-  );
+  const card = $('<div class="card"></div>');
+  const body = $('<div class="card-body"></div>').appendTo(card);
+  $('<h5 class="card-title"></h5>').text(new Date().toISOString()).appendTo(body);
+  $('<h6 class="card-subtitle text-muted"></h6>').text(topic).appendTo(body);
+  $('<p class="card-text font-monospace"></p>').text(JSON.stringify(payload)).appendTo(body);
+  $("#logsContainer").prepend(card);
 }
 
-export { amqpConn, amqpChannel, connect, updateAmqpToken, userExchange, setUserExchange };
+export { amqpConn, connect, updateAmqpToken, currentExchange };

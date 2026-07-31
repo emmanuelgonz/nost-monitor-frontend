@@ -14,65 +14,100 @@
       <div class="modal-body">
         <form id="loginForm">
           <div class="container">
-            <div class="row mb-3">
-              <div class="col-4">
-                <label for="loginExchange" class="form-label">Exchange</label>
-                <input
-                  type="text"
-                  class="form-control"
-                  id="loginExchange"
-                  required
-                />
-              </div>
-              <div class="col-4">
-                <label for="loginKeycloakHost" class="form-label">Keycloak Hostname</label>
-                <input
-                  type="text"
-                  class="form-control"
-                  id="loginKeycloakHost"
-                  required
-                />
-              </div>
-              <div class="col-4">
-                <label for="loginKeycloakPort" class="form-label">Keycloak Port</label>
-                <input
-                  type="text"
-                  class="form-control"
-                  id="loginKeycloakPort"
-                  required
-                />
-              </div>
+            <!-- RabbitMQ Exchange — always visible -->
+            <div class="mb-4">
+              <label for="loginRabbitMQExchange" class="form-label">RabbitMQ Exchange</label>
+              <input
+                type="text"
+                class="form-control"
+                id="loginRabbitMQExchange"
+                required
+              />
             </div>
-            <div class="row mb-3">
-              <div class="col-4">
-                <label for="loginKeycloakRealm" class="form-label">Keycloak Realm</label>
-                <input
-                  type="text"
-                  class="form-control"
-                  id="loginKeycloakRealm"
-                  required
-                />
-              </div>
-              <div class="col-4">
-                <label for="loginKeycloakClientId" class="form-label">Keycloak Client ID</label>
-                <input
-                  type="text"
-                  class="form-control"
-                  id="loginKeycloakClientId"
-                />
-              </div>
-              <div class="col-4">
-                <label for="loginKeycloakClientSecret" class="form-label">Keycloak Client Secret</label>
-                <input
-                  type="text"
-                  class="form-control"
-                  id="loginKeycloakClientSecret"
-                />
-              </div>
+            <!-- Advanced Settings Toggle (hidden in production) -->
+            <div class="mb-3" id="advancedToggle" style="display: none;">
+              <a href="#" class="text-decoration-none" id="advancedToggleLink">
+                <i class="bi bi-chevron-right" id="advancedToggleIcon"></i> Advanced Settings
+              </a>
             </div>
-            <div class="row mb-3">
-              <div class="col-auto">
-                <label class="form-label">Options</label>
+            <!-- Advanced Settings (hidden by default, entirely hidden in production) -->
+            <div id="advancedSettings" style="display: none;">
+              <!-- Keycloak Option Toggle -->
+              <div class="mb-3">
+                <div class="form-check">
+                  <input class="form-check-input" type="checkbox" id="useKeycloak" checked>
+                  <label class="form-check-label" for="useKeycloak">
+                    Use Keycloak authentication
+                  </label>
+                </div>
+              </div>
+              <!-- Keycloak Section -->
+              <div class="mb-4 p-3 border rounded" id="keycloakSection">
+                <h6 class="mb-3">Keycloak Parameters</h6>
+                <div class="row mb-3">
+                  <div class="col-4">
+                    <label for="loginKeycloakHost" class="form-label">Keycloak Hostname</label>
+                    <input
+                      type="text"
+                      class="form-control"
+                      id="loginKeycloakHost"
+                    />
+                  </div>
+                  <div class="col-4">
+                    <label for="loginKeycloakPort" class="form-label">Keycloak Port</label>
+                    <input
+                      type="text"
+                      class="form-control"
+                      id="loginKeycloakPort"
+                    />
+                  </div>
+                  <div class="col-4">
+                    <label for="loginKeycloakRealm" class="form-label">Keycloak Realm</label>
+                    <input
+                      type="text"
+                      class="form-control"
+                      id="loginKeycloakRealm"
+                    />
+                  </div>
+                </div>
+                <div class="row mb-3">
+                  <div class="col-4">
+                    <label for="loginKeycloakWebLoginClientId" class="form-label">Keycloak Client ID</label>
+                    <input
+                      type="text"
+                      class="form-control"
+                      id="loginKeycloakWebLoginClientId"
+                    />
+                  </div>
+                </div>
+              </div>
+              <!-- RabbitMQ Connection -->
+              <div class="mb-4 p-3 border rounded">
+                <h6 class="mb-3">RabbitMQ Connection</h6>
+                <div class="row mb-3">
+                  <div class="col-6">
+                    <label for="loginRabbitMQHost" class="form-label">RabbitMQ Hostname</label>
+                    <input
+                      type="text"
+                      class="form-control"
+                      id="loginRabbitMQHost"
+                      required
+                    />
+                  </div>
+                  <div class="col-6">
+                    <label for="loginRabbitMQPort" class="form-label">RabbitMQ Port</label>
+                    <input
+                      type="text"
+                      class="form-control"
+                      id="loginRabbitMQPort"
+                      required
+                    />
+                  </div>
+                </div>
+              </div>
+              <!-- Encryption Option -->
+              <div class="mb-4 p-3 border rounded">
+                <h6 class="mb-3">Encryption Option</h6>
                 <div class="form-check">
                   <input
                     type="checkbox"
@@ -86,16 +121,8 @@
                   </label>
                 </div>
               </div>
-              <div class="col-4">
-                <label for="loginKeycloakWebLoginClientId" class="form-label">Keycloak Web Login Client ID</label>
-                <input
-                  type="text"
-                  class="form-control"
-                  id="loginKeycloakWebLoginClientId"
-                  required
-                />
-              </div>
             </div>
+            <!-- Submit Button -->
             <div class="row justify-content-end">
               <div class="col-auto">
                 <button type="submit" class="btn btn-primary" id="loginConnect">
@@ -109,3 +136,4 @@
     </div>
   </div>
 </div>
+

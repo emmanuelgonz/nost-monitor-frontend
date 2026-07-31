@@ -1,7 +1,9 @@
 import { TempusDominus } from "@eonasdan/tempus-dominus";
 import $ from "jquery";
 import { convertDateTimeToUTC } from "../utils";
-import { amqpChannel, userExchange } from "../main";
+import { currentExchange } from "../main";
+import { apiPost } from "../api";
+import { showError, showSuccess } from "../notify";
 
 const startInterval = new TempusDominus(
   document.getElementById("startInterval"),
@@ -50,39 +52,30 @@ const startTime = new TempusDominus(document.getElementById("startTime"), {
 
 $("#startForm").on("submit", async (e) => {
   e.preventDefault();
-  const RABBITMQ_EXCHANGE = userExchange || process.env.DEFAULT_RABBITMQ_EXCHANGE;
-  const routingKey = `${RABBITMQ_EXCHANGE}.start`;
+  const prefix = currentExchange || process.env.DEFAULT_RABBITMQ_EXCHANGE;
 
-  const message = {
-    tasking_parameters: {
-      sim_start_time: convertDateTimeToUTC(
-        startInterval.dates.picked[0],
-      ).toISOString(),
-      sim_stop_time: convertDateTimeToUTC(
-        startInterval.dates.picked[1],
-      ).toISOString(),
-      start_time: startTime.dates.lastPicked
-        ? convertDateTimeToUTC(startTime.dates.lastPicked).toISOString()
-        : null,
-      time_scaling_factor: $("#startTimeScale").val()
-        ? Number.parseFloat($("#startTimeScale").val())
-        : null,
-    },
+  const body = {
+    simStartTime: convertDateTimeToUTC(
+      startInterval.dates.picked[0],
+    ).toISOString(),
+    simStopTime: convertDateTimeToUTC(
+      startInterval.dates.picked[1],
+    ).toISOString(),
   };
+  if (startTime.dates.lastPicked) {
+    body.startTime = convertDateTimeToUTC(startTime.dates.lastPicked).toISOString();
+  }
+  if ($("#startTimeScale").val()) {
+    body.timeScaleFactor = Number.parseFloat($("#startTimeScale").val());
+  }
 
-  if (amqpChannel) {
-    try {
-      await amqpChannel.basicPublish(
-        RABBITMQ_EXCHANGE,
-        routingKey,
-        JSON.stringify(message)
-      );
-      console.log("Start command sent:", message);
-    } catch (err) {
-      console.error("Failed to send start command:", err);
-    }
-  } else {
-    console.warn("AMQP channel not ready.");
+  try {
+    await apiPost(`/start/${prefix}`, body);
+    console.log("Start command sent:", body);
+    showSuccess(`Start command sent for '${prefix}'.`);
+  } catch (err) {
+    console.error("Failed to send start command:", err);
+    showError(`Start failed: ${err.message}`);
   }
 });
 
